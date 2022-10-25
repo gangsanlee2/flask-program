@@ -62,6 +62,12 @@ class Grade(object):
         print("*******************************")
 
     @staticmethod
+    def delete(ls, name):
+        for i,j in enumerate(ls):
+            if j.name == name:
+                del ls[i]
+
+    @staticmethod
     def new_grade():
         return Grade(input(" 이름 : "), int(input(" 국어 : ")),
                      int(input(" 영어 : ")), int(input(" 수학 : ")))

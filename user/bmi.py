@@ -42,6 +42,12 @@ class Bmi(object):
         print("***************************")
 
     @staticmethod
+    def delete(ls, name):
+        for i,j in enumerate(ls):
+            if j.name == name:
+                del ls[i]
+
+    @staticmethod
     def new_bmi():
         return Bmi(input(" 이름 : "),
                     int(input(" 키 : ")),

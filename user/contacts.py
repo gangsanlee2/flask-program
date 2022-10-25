@@ -26,6 +26,12 @@ class Contacts(object):
         print("****************************")
 
     @staticmethod
+    def delete(ls, name):
+        for i,j in enumerate(ls):
+            if j.name == name:
+                del ls[i]
+
+    @staticmethod
     def new_contacts():
         return Contacts(input(" 이름 : "), input(" 전화번호 : "),
                         input(" 이메일 : "), input(" 주소 : "))
