@@ -53,7 +53,7 @@ class Grade(object):
                f"{self.total} {self.avg} {self.grade}"
 
     @staticmethod
-    def print_result(ls):
+    def result(ls):
         print("### 성적표 ###")
         print("********************************")
         print("이름 국어 영어 수학 총점 평균 학점")

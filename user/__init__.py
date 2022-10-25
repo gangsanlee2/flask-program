@@ -41,7 +41,7 @@ while True:
         elif submenu == 1:
             ls.append(Grade.new_grade())
         elif submenu == 2:
-            Grade.print_result(ls)
+            Grade.result(ls)
         elif submenu == 3:
             pass
         else:
