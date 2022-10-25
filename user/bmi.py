@@ -19,6 +19,8 @@ BMI 지수에 따른 결과는 다음과 같다.
 유관순 170 79 정상
 ***************************
 '''
+from util.common import Common
+
 
 class Bmi(object):
 
@@ -27,17 +29,16 @@ class Bmi(object):
         self.cm = cm
         self.kg = kg
 
-    def return_info(self):
+    def __str__(self):
         return f"{self.name} {self.cm} {self.kg} 정상"
 
     @staticmethod
-    def print_result(ls):
+    def result(ls):
         print(" ### 비만도 계산 ### ")
         print("***************************")
         print("이름 키(cm) 몸무게(kg) 비만도")
         print("***************************")
-        for i in ls:
-            print(i.return_info())
+        [print(i) for i in ls]
         print("***************************")
 
     @staticmethod
@@ -46,32 +47,3 @@ class Bmi(object):
                     int(input(" 키 : ")),
                     int(input(" 몸무게 : ")))
 
-
-    @staticmethod
-    def print_menu():
-        print("1. 비만지수 등록")
-        print("2. 비만지수 출력")
-        print("3. 비만지수 삭제")
-        print("0. 종료")
-        return int(input("메뉴 선택: "))
-
-    @staticmethod
-    def main():
-        ls = []
-        while True:
-            menu = Bmi.print_menu()
-            if menu == 0:
-                print(" ### 종료 ### ")
-                break
-            elif menu == 1:
-                print(" ### 비만지수 등록 ### ")
-                ls.append(Bmi.new_bmi())
-            elif menu == 2:
-                print(" ### 비만지수 목록 ### ")
-                Bmi.print_result(ls)
-            elif menu == 3:
-                print(" ### 비만지수 삭제 ### ")
-            else:
-                print(" 잘못된 메뉴값. 다시 입력 ")
-
-Bmi.main()

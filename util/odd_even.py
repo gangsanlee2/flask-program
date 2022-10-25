@@ -1,3 +1,6 @@
+from util.common import Common
+
+
 class OddEven(object):
 
     def __init__(self):
@@ -6,19 +9,12 @@ class OddEven(object):
     def execute(self):
         print(" ### 홀짝구분 ### ")
 
-    @staticmethod
-    def print_menu():
-        print("1. 홀짝 등록")
-        print("2. 홀짝 출력")
-        print("3. 홀짝 삭제")
-        print("0. 종료")
-        return int(input("메뉴 선택: "))
 
     @staticmethod
     def main():
         ls = []
         while True:
-            menu = OddEven.print_menu()
+            menu = Common.menu()
             if menu == 0:
                 print(" ### 종료 ### ")
                 break

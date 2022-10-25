@@ -18,6 +18,8 @@
 유관순 90 90 92 272 90.6 A
 ********************************
 """
+from util.common import Common
+
 
 class Grade(object):
 
@@ -37,9 +39,16 @@ class Grade(object):
         self.avg = self.total/3
 
     def set_grade(self):
-        pass
+        avg = self.avg
+        if avg >= 90: grade = "A"
+        elif avg >= 80: grade = "B"
+        elif avg >= 70: grade = "C"
+        elif avg >= 60: grade = "D"
+        elif avg >= 50: grade = "E"
+        else : grade = "F"
+        self.grade = grade
 
-    def return_info(self):
+    def __str__(self):
         return f"{self.name} {self.kor} {self.eng} {self.math} " \
                f"{self.total} {self.avg} {self.grade}"
 
@@ -49,40 +58,10 @@ class Grade(object):
         print("********************************")
         print("이름 국어 영어 수학 총점 평균 학점")
         print("*******************************")
-        for i in ls:
-            print(i.return_info())
+        [print(i) for i in ls]
         print("*******************************")
 
     @staticmethod
     def new_grade():
         return Grade(input(" 이름 : "), int(input(" 국어 : ")),
                      int(input(" 영어 : ")), int(input(" 수학 : ")))
-
-    @staticmethod
-    def print_menu():
-        print("1. 성적표 등록")
-        print("2. 성적표 출력")
-        print("3. 성적표 삭제")
-        print("0. 종료")
-        return int(input("메뉴 선택: "))
-
-    @staticmethod
-    def main():
-        ls = []
-        while True:
-            menu = Grade.print_menu()
-            if menu == 0:
-                print(" ### 종료 ### ")
-                break
-            elif menu == 1:
-                print(" ### 성적표 등록 ###")
-                ls.append(Grade.new_grade())
-            elif menu == 2:
-                print(" ### 성적표 목록 ###")
-                Grade.print_result(ls)
-            elif menu == 3:
-                print(" ### 성적표 삭제 ###")
-            else:
-                print(" 다시 입력 ")
-
-Grade.main()

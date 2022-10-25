@@ -1,3 +1,14 @@
+'''
+두자리 정수 랜덤숫자 10개를 뽑아서
+사용자가 검색하는 숫자의 배수만 출력하는
+프로그램을 개발하시오.
+예) [12, 23, 48,...,]
+사용자의 input 값이 12인 경우
+출력값이 12, 48만 되도록 한다.
+'''
+from util.common import Common
+
+
 class SearchNumber(object):
 
     def __init__(self):
@@ -7,18 +18,10 @@ class SearchNumber(object):
         print(" ### 숫자찾기 ### ")
 
     @staticmethod
-    def print_menu():
-        print("1. 숫자 등록")
-        print("2. 숫자 출력")
-        print("3. 숫자 삭제")
-        print("0. 종료")
-        return int(input("메뉴 선택: "))
-
-    @staticmethod
     def main():
         ls = []
         while True:
-            menu = SearchNumber.print_menu()
+            menu = Common.menu()
             if menu == 0:
                 print(" ### 종료 ### ")
                 break
