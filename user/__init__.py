@@ -19,7 +19,8 @@ while True:
         elif submenu == 2:
             Bmi.result(ls)
         elif submenu == 3:
-            pass
+            name = input(" 삭제할 이름 : ")
+            Bmi.delete(ls, name)
         else:
             print(" 다시 입력 ")
     elif menu == 2:
@@ -31,7 +32,8 @@ while True:
         elif submenu == 2:
             Contacts.result(ls)
         elif submenu == 3:
-            pass
+            name = input(" 삭제할 이름 : ")
+            Contacts.delete(ls, name)
         else:
             print(" 다시 입력 ")
     elif menu == 3:
@@ -43,7 +45,8 @@ while True:
         elif submenu == 2:
             Grade.result(ls)
         elif submenu == 3:
-            pass
+            name = input(" 삭제할 이름 : ")
+            Grade.delete(ls,name)
         else:
             print(" 다시 입력 ")
     elif menu == 4:
@@ -55,7 +58,8 @@ while True:
         elif submenu == 2:
             Person.result(ls)
         elif submenu == 3:
-            pass
+            name = input(" 삭제할 이름 : ")
+            Person.delete(ls,name)
         else:
             print(" 다시 입력 ")
     else:

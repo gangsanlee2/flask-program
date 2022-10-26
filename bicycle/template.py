@@ -1,4 +1,5 @@
-class View(object):
+class Tempalate(object):
+
     def __init__(self):
         pass
 

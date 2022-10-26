@@ -6,4 +6,4 @@ class Common(object):
     def menu(ls):
         for i,j in enumerate(ls):
             print(f"{i}.{j}")
-        return int(input("메뉴 선택 : "))
+        return input("메뉴 선택 : ")
