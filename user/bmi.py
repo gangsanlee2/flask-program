@@ -24,7 +24,7 @@ from util.common import Common
 
 class Bmi(object):
 
-    def __init__(self, name, cm, kg):
+    def __init__(self, name, cm, kg): #__init__ == Bmi  단지 동어 반복을 피하기 위해. 고로 Bmi(~~): 생성자
         self.name = name
         self.cm = cm
         self.kg = kg

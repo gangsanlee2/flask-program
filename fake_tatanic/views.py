@@ -1,4 +1,4 @@
-from tatanic.models import TitanicModel
+from fake_tatanic import TitanicModel
 from util.dataset import Dataset
 
 
@@ -13,25 +13,24 @@ class TitanicController(object):
 
     dataset = Dataset()
 
-    def preprocess(self, train, test) -> object:  # 전처리
+    def preprocess(self, train, test) -> object:
         model = self.model
         this = self.dataset
         this.train = model.new_model(train)
         this.test = model.new_model(test)
         this.id = this.test['PassengerId']
-        # columns 편집과정
 
         return this
 
-    def modeling(self, train, test) -> object:  # 모델생성
+    def modeling(self, train, test) -> object:
         model = self.model
         this = self.preprocess(train, test)
         this.label = model.create_label(this)
         this.train = model.create_train(this)
         return this
 
-    def learning(self):  # 기계학습
+    def learning(self):
         pass
 
-    def submit(self):  # 배포
+    def submit(self):
         pass

@@ -1,5 +1,6 @@
-from tatanic.template import Plot
-from tatanic.views import TitanicController
+from fake_tatanic.models import TitanicModel
+from fake_tatanic.template import Plot
+from fake_tatanic.views import TitanicController
 from util.common import Common
 
 if __name__ == '__main__':
@@ -16,8 +17,9 @@ if __name__ == '__main__':
             plot.draw_sex()
             plot.draw_pclass()
             plot.draw_embarked()
+            model = TitanicModel()
         elif menu == "2":
-            print(" ### 데이터 처리 ### ")
+            print(" ### 모델링 ### ")
             df = api.modeling('train.csv', 'test.csv')
         elif menu == "3":
             print(" ### 머신러닝 ### ")
