@@ -16,7 +16,7 @@ class Dataset(object):
     def context(self) -> str: return self._context
 
     @context.setter
-    def context(self, context): self._context = context
+    def context(self, context): self._context = context   #self.'_'context _ : priviat한 공간이라는 뜻
 
     @property
     def fname(self) -> str: return self._fname

@@ -17,7 +17,7 @@ if __name__ == '__main__':
             plot.draw_pclass()
             plot.draw_embarked()
         elif menu == "2":
-            print(" ### 데이터 처리 ### ")
+            print(" ### 모델링 ### ")
             df = api.modeling('train.csv', 'test.csv')
         elif menu == "3":
             print(" ### 머신러닝 ### ")
