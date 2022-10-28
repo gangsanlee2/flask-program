@@ -19,7 +19,10 @@ class TitanicController(object):
         this.train = model.new_model(train)
         this.test = model.new_model(test)
         this.id = this.test['PassengerId']
-
+        this = model.sex_nominal(this)
+        this = model.age_ordinal(this)
+        this = model.fare_ordinal(this)
+        this = model.embarked_nominal(this)
         return this
 
     def modeling(self, train, test) -> object:
@@ -34,3 +37,8 @@ class TitanicController(object):
 
     def submit(self):
         pass
+
+if __name__ == '__main__':
+    c = TitanicController()
+    this = c.modeling('train.csv','test.csv')
+    print(this.train)

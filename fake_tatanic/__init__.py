@@ -1,3 +1,5 @@
+#__init__.py 안에 코드를 쓰는 것은 단지 중간 점검 목적. 완성 후엔 빈 파일로 제출
+
 from fake_tatanic.models import TitanicModel
 from fake_tatanic.template import Plot
 from fake_tatanic.views import TitanicController

@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 import seaborn as sns
 from util.dataset import Dataset
@@ -85,11 +86,15 @@ class TitanicModel(object):
 
     @staticmethod
     def age_ordinal(this) -> object: # 연령대 10대, 20대, 30대
-        train = this.train
-        test = this.test
         for i in [this.train, this.test]:
-            i['AgeBand'] = i['Age']
-
+            i['Age'] = i['Age'].fillna(-0.5)
+        bins = [-1,0,5,12,18,24,34,68,np.inf] # bin : 통, 계급   inf : infinite
+        labels = ['Unknown', 'Baby', 'Child', 'Teenager', 'Student', 'Young Adult', 'Adult', 'Senior']
+        age_mapping = {'Unknown': 0, 'Baby': 1, 'Child': 2, 'Teenager': 3, 'Student': 4,
+                       'Young Adult': 5, 'Adult': 6, 'Senior': 7}
+        for i in [this.train, this.test]:
+            i['AgeGroup'] = pd.cut(i['Age'], bins=bins, labels=labels)
+            i['AgeGroup'] = i['AgeGroup'].map(age_mapping)
         return this
 
 
@@ -127,6 +132,13 @@ if __name__ == '__main__':   # 나중에 지워야 함. 단지 디버깅 목적
     print(this.train['FareBand'])
     print(this.train['FareBand'].value_counts())
     '''
-    this = TitanicModel.embarked_nominal(this)
+
+    this = t.embarked_nominal(this)
     print(this.train.columns) # columns는 메소드가 X. 그래서 columns() X
     print(this.train.head(n=10))
+    '''
+    this = TitanicModel.age_ordinal(this)
+    print(this.train.columns)
+    print(f"null의 개수 :{this.train['Age'].isnull().sum()}")
+    print(this.train.head(n=10))
+    '''

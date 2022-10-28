@@ -1,4 +1,4 @@
-#플라스크의 핵심!!!
+#app.py는 플라스크의 핵심!!!
 
 from flask import Flask
 
