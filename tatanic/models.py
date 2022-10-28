@@ -116,7 +116,7 @@ class TitanicModel(object):
         return this
 
 if __name__ == '__main__':   # 나중에 지워야 함. 단지 디버깅 목적
-    t= TitanicModel()
+    t = TitanicModel()
     this = Dataset()
     this.train = t.new_model('train.csv')
     this.test = t.new_model('test.csv')
@@ -132,13 +132,12 @@ if __name__ == '__main__':   # 나중에 지워야 함. 단지 디버깅 목적
     print(this.train['FareBand'])
     print(this.train['FareBand'].value_counts())
     '''
-
-    this = t.embarked_nominal(this)
-    print(this.train.columns) # columns는 메소드가 X. 그래서 columns() X
-    print(this.train.head(n=10))
     '''
     this = TitanicModel.age_ordinal(this)
     print(this.train.columns)
     print(f"null의 개수 :{this.train['Age'].isnull().sum()}")
     print(this.train.head(n=10))
     '''
+    this = t.embarked_nominal(this)
+    print(this.train.columns)  # columns는 메소드가 X. 그래서 columns() X
+    print(this.train.head(n=10))

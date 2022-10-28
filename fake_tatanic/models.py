@@ -73,9 +73,21 @@ class TitanicModel(object):
 
     @staticmethod
     def embarked_nominal(this) -> object:
+
+        for i in [this.train, this.test]:
+            i = i.fillna({'Embarked':'S'})
+        '''
         this.train = this.train.fillna({'Embarked': 'S'})
         this.test = this.test.fillna({'Embarked': 'S'})
+        '''
         for i in [this.train, this.test]:
             i['Departure'] = i['Embarked'].map({"S":1, "C":2, "Q":3})
         return this
 
+if __name__ == '__main__':
+    model = TitanicModel()
+    this = Dataset()
+    this.train = model.new_model('train.csv')
+    this.test = model.new_model('test.csv')
+    this = model.embarked_nominal(this)
+    print(this.train)
