@@ -1,15 +1,12 @@
 from io import BytesIO
+
 import cv2
-import numpy as np
-import pandas as pd
 import requests
 from PIL import Image
-from util.dataset import Dataset
+import numpy as np
 import matplotlib.pyplot as plt
 
-
 class LennaModel(object):
-    dataset = Dataset()
 
     def __init__(self):
         headers = {'User-Agent': 'My User Agent 1.0'}
@@ -21,14 +18,10 @@ class LennaModel(object):
     def __str__(self):
         return ""
 
-    def preprocess(self):
-        pass
-
     def new_model(self, fname) -> object:
-        this = self.dataset
-        this.context = './data/'
-        img = cv2.imread(this.context + fname)
-        return img
+        context = './data/'
+        this = cv2.imread(context + fname, cv2.IMREAD_COLOR)
+        return this
 
     def createOption(self):
         self.ADAPTIVE_THRESH_MEAN_C = 0
@@ -36,17 +29,16 @@ class LennaModel(object):
         self.THRESH_BINARY = 2
         self.THRESH_BINARY_INV = 3
 
-    def imshow(self, img):
-        img = Image.fromarray(img)
-        plt.imshow(img)
+    def imshow(self, this):
+        this = Image.fromarray(this)
+        plt.imshow(this)
         plt.show()
 
-    def gray_scale(self, img):
-        dst = img[:, :, 0] * 0.114 + img[:, :, 1] * 0.587 + img[:, :, 2] * 0.229  # GRAYSCALE 변환 공식
+    def gray_scale(self, this):
+        dst = this[:, :, 0] * 0.114 + this[:, :, 1] * 0.587 + this[:, :, 2] * 0.229
         return dst
-
 
 if __name__ == '__main__':
     lm = LennaModel()
-    img = lm.gray_scale(lm.lenna)
-    lm.imshow(img)
+    this = lm.gray_scale(lm.lenna)
+    lm.imshow(this)

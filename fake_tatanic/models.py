@@ -84,6 +84,20 @@ class TitanicModel(object):
             i['Departure'] = i['Embarked'].map({"S":1, "C":2, "Q":3})
         return this
 
+    @staticmethod
+    def title_nominal(this) -> object:
+        combine = [this.train, this.test]
+        for i in combine:
+            i['Title'] = i.Name.str.extract('([A-za-z]+)\.', expand=False)
+        for j in combine:
+            j['Title'] = j['Title'].replace(['Countess', 'Lady', 'Sir'], 'Royal')
+            j['Title'] = j['Title'].replace(['Capt', 'Col', 'Don', 'Dr', 'Major', 'Rev', 'Jonkheer', 'Dona', 'Mme'], 'Rare')
+            j['Title'] = j['Title'].replace('mlle', 'Mr')
+            j['Title'] = j['Title'].replace('Ms', 'Miss')
+            j['Title'] = j['Title'].fillna(0)
+            j['Title'] = j['Title'].map({'Mr': 1, 'Miss': 2, 'Mrs': 3, 'Master': 4, 'Royal': 5, 'Rare': 6})
+        return this
+
 if __name__ == '__main__':
     model = TitanicModel()
     this = Dataset()
