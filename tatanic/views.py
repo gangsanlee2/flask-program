@@ -25,6 +25,17 @@ class TitanicController(object):
         this = model.age_ordinal(this)
         this = model.fare_ordinal(this)
         this = model.embarked_nominal(this)
+        this = model.title_nominal(this)
+        '''
+        this = model.drop_features(this, 'PassengerId')
+        this = model.drop_features(this, 'Name')
+        this = model.drop_features(this, 'Sex')
+        this = model.drop_features(this, '...')
+        ... -> not pythonic
+        for i in ['','','','', ... ]:
+            model.drop_features(this, i) -> not pythonic
+        '''
+        this = model.drop_features(this, 'PassengerId', 'Name', 'Sex', 'Age', 'SibSp', 'Parch', 'Ticket', 'Fare', 'Cabin')
         return this
 
     def modeling(self, train, test) -> object:  # 모델생성
