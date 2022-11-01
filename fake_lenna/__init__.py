@@ -5,7 +5,7 @@ from util.common import Common
 
 if __name__ == '__main__':
     while True:
-        menu = Common.menu(["close", "show original"])
+        menu = Common.menu(["close", "show original", "Edge with Canny"])
         if menu == "0":
             print(" ### close ### ")
             break
@@ -17,6 +17,9 @@ if __name__ == '__main__':
             cv2.imshow('Gray', this)
             cv2.waitKey(0)
             cv2.destroyAllWindows()
+        elif menu == "2":
+            print(" ### Edge with Canny ### ")
+
         else:
             print(" ### error ### ")
 

@@ -9,11 +9,13 @@ import matplotlib.pyplot as plt
 class LennaModel(object):
 
     def __init__(self):
+        '''
         headers = {'User-Agent': 'My User Agent 1.0'}
         res = requests.get("https://upload.wikimedia.org/wikipedia/ko/2/24/Lenna.png", headers=headers)
         lenna = Image.open(BytesIO(res.content))
         self.lenna = np.array(lenna)
         self.createOption()
+        '''
 
     def __str__(self):
         return ""
