@@ -12,7 +12,7 @@ class Plot(object):
     model = TitanicModel()
 
     def __init__(self, fname):
-        self.entry = self.model.new_model(fname)
+        self.entry = self.model.new_model(fname)   # 엔트리entry = 시각화된 인스턴스
 
     def __str__(self):
         return f""

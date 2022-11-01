@@ -1,3 +1,12 @@
+'''
+인스턴스 생성시
+
+내부에 있는 클래스를 가져와 쓸 때 → new_~
+
+외부에 있는 파일을 가져와 쓸 때 → create_~
+'''
+
+
 import numpy as np
 import pandas as pd
 import seaborn as sns
@@ -46,7 +55,7 @@ class TitanicModel(object):
         return this.train.drop('Survived', axis = 1)
 
     @staticmethod
-    def create_label(this) -> object:
+    def create_label(this) -> object:   # create_test 대신 create_label로 주로 쓰인다.
         return this.train["Survived"]
 
     @staticmethod
