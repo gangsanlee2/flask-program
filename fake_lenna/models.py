@@ -12,8 +12,8 @@ class LennaModel(object):
         '''
         headers = {'User-Agent': 'My User Agent 1.0'}
         res = requests.get("https://upload.wikimedia.org/wikipedia/ko/2/24/Lenna.png", headers=headers)
-        canny = Image.open(BytesIO(res.content))
-        self.canny = np.array(canny)
+        fake_canny_11.02. = Image.open(BytesIO(res.content))
+        self.fake_canny_11.02. = np.array(fake_canny_11.02.)
         self.createOption()
         '''
 
