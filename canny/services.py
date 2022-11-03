@@ -6,6 +6,7 @@ import requests
 import cv2 as cv
 import matplotlib.pyplot as plt
 
+
 def ImageToNumberArray(url):
     res = requests.get(url, headers={'User-Agent': 'My User Agent 1.0'})
     image = Image.open(BytesIO(res.content))
@@ -102,6 +103,29 @@ def Canny(src, lowThreshold,highThreshold):
                     pass
     return img
 
+def Hough(edges):
+    lines = cv.HoughLinesP(edges, 1, np.pi / 180., 10, minLineLength=50, maxLineGap=5)
+    dst = cv.cvtColor(edges, cv.COLOR_GRAY2BGR)
+    if lines is not None:
+        for i in range(lines.shape[0]):
+            pt1 = (lines[i][0][0], lines[i][0][1])
+            pt2 = (lines[i][0][2], lines[i][0][3])
+            cv.line(dst, pt1, pt2, (255, 0, 0), 2, cv.LINE_AA)
+    return dst
+
+def HaarCascade(*params):
+    girl = params[0]
+    xml = params[1]
+    haar = cv.CascadeClassifier('./data/' + xml)
+    face = haar.detectMultiScale(girl, minSize=(150, 150))
+    if len(face) == 0:
+        print("얼굴인식 실패")
+        quit()
+    for (x, y, w, h) in face:
+        print(f'얼굴의 좌표 : {x},{y},{w},{h}')
+        red = (255, 0, 0)
+        cv.rectangle(girl, (x, y), (x + w, y + h), red, thickness=20)
+
 def filter2D(src, kernel, delta=0):
     # 가장자리 픽셀을 (커널의 길이 // 2) 만큼 늘리고 새로운 행렬에 저장
     halfX = kernel.shape[0] // 2
@@ -124,13 +148,26 @@ def filter2D(src, kernel, delta=0):
     def new_model(self, fname) -> object:
         return cv2.imread('./data/' + fname)
     '''
-def image_read(fname) -> object: # 전처리
-    return (lambda x: cv.imread('./data/'+x))(fname)
+
+def image_read(fname) -> object:
+    return (lambda x: cv.imread('./data/' + x))(fname)
+
 '''
 def gray_scale(img):
     dst = img[:, :, 0] * 0.114 + img[:, :, 1] * 0.587 + img[:, :, 2] * 0.229  # GRAYSCALE 변환 공식
     return dst
 '''
+
+def ExecuteLambda(*params):
+    cmd = params[0]
+    target = params[1]
+    if cmd == 'IMAGE_READ':
+        return (lambda x: image_read(x))(target)
+    elif cmd == 'GRAYSCALE':
+        return (lambda x: cv.cvtColor(x, cv.COLOR_BGR2GRAY))(target)
+    elif cmd == 'FROMARRAY':
+        return (lambda x: Image.fromarray(x))(target)
+
 if __name__ == '__main__':
     URL = "https://docs.opencv.org/4.x/roi.jpg"
     arr = ImageToNumberArray(URL)

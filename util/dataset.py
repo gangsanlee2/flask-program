@@ -47,3 +47,4 @@ class Dataset(object):
 
     @label.setter
     def label(self, label): self._label = label
+
