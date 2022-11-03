@@ -1,6 +1,6 @@
 from matplotlib import pyplot as plt
 from PIL import Image
-from canny.services import ImageToNumberArray, ExecuteLambda, Hough, HaarCascade
+from canny.services import ImageToNumberArray, ExecuteLambda, Hough, Haar
 import cv2 as cv
 import numpy as np
 
@@ -83,7 +83,7 @@ class MenuController(object):
         plt.title('Original Image'), plt.xticks([]), plt.yticks([])
 
         xml = params[1]
-        HaarCascade(girl, xml)
+        Haar(girl, xml)
 
         plt.subplot(152), plt.imshow(gray, cmap='gray')
         plt.title('Gray Image'), plt.xticks([]), plt.yticks([])

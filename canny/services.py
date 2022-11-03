@@ -113,18 +113,18 @@ def Hough(edges):
             cv.line(dst, pt1, pt2, (255, 0, 0), 2, cv.LINE_AA)
     return dst
 
-def HaarCascade(*params):
-    girl = params[0]
-    xml = params[1]
-    haar = cv.CascadeClassifier('./data/' + xml)
-    face = haar.detectMultiScale(girl, minSize=(150, 150))
+def Haar(*params):
+    #girl = params[0]
+    #xml = params[1]
+    haar = cv.CascadeClassifier('./data/' + params[1])
+    face = haar.detectMultiScale(params[0], minSize=(150, 150))
     if len(face) == 0:
         print("얼굴인식 실패")
         quit()
     for (x, y, w, h) in face:
         print(f'얼굴의 좌표 : {x},{y},{w},{h}')
         red = (255, 0, 0)
-        cv.rectangle(girl, (x, y), (x + w, y + h), red, thickness=20)
+        cv.rectangle(params[0], (x, y), (x + w, y + h), red, thickness=20)
 
 def filter2D(src, kernel, delta=0):
     # 가장자리 픽셀을 (커널의 길이 // 2) 만큼 늘리고 새로운 행렬에 저장
@@ -158,9 +158,9 @@ def gray_scale(img):
     return dst
 '''
 
-def ExecuteLambda(*params):
-    cmd = params[0]
-    target = params[1]
+def ExecuteLambda(cmd, target): #Command Pattern
+    #cmd = params[0]
+    #target = params[1]
     if cmd == 'IMAGE_READ':
         return (lambda x: image_read(x))(target)
     elif cmd == 'GRAYSCALE':
