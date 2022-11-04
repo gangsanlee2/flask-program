@@ -124,7 +124,26 @@ def Haar(*params):
     for (x, y, w, h) in face:
         print(f'얼굴의 좌표 : {x},{y},{w},{h}')
         red = (255, 0, 0)
-        cv.rectangle(params[0], (x, y), (x + w, y + h), red, thickness=20)
+        img = cv.rectangle(params[0], (x, y), (x + w, y + h), red, thickness=20)
+        return img
+def Mosaic(img, size):
+    haar = cv.CascadeClassifier('./data/haarcascade_frontalface_alt.xml')
+    face = haar.detectMultiScale(img, minSize=(150, 150))
+    if len(face) == 0:
+        print("얼굴인식 실패")
+        quit()
+    for (x, y, w, h) in face:
+        print(f'얼굴의 좌표 : {x},{y},{w},{h}')
+        x1 = x
+        x2 = x+w
+        y1 = y
+        y2 = y+h
+        i_rect = img[y1:y2, x1:x2]
+        i_small = cv.resize(i_rect, (size, size))
+        i_mos = cv.resize(i_small, (x2-x1, y2-y1), interpolation=cv.INTER_AREA)
+        img2 = img.copy()
+        img2[y1:y2, x1:x2] = i_mos
+    return img2
 
 def filter2D(src, kernel, delta=0):
     # 가장자리 픽셀을 (커널의 길이 // 2) 만큼 늘리고 새로운 행렬에 저장
@@ -165,18 +184,27 @@ def ExecuteLambda(cmd, target): #Command Pattern
         return (lambda x: image_read(x))(target)
     elif cmd == 'GRAYSCALE':
         return (lambda x: cv.cvtColor(x, cv.COLOR_BGR2GRAY))(target)
-    elif cmd == 'FROMARRAY':
+    elif cmd == 'FROM_ARRAY':
         return (lambda x: Image.fromarray(x))(target)
 
 if __name__ == '__main__':
+    '''
     URL = "https://docs.opencv.org/4.x/roi.jpg"
     arr = ImageToNumberArray(URL)
     img = (lambda x: x[:, :, 0] * 0.114 + x[:, :, 1] * 0.587 + x[:, :, 2] * 0.229)(arr)
     img = Canny(GaussianBlur(img, 1, 1), 50, 150)
     plt.imshow((lambda x: Image.fromarray(x))(img))
     plt.show()
-'''
+    '''
+    '''
     img = Canny(img)
     GaussianBlur.get(img, 1, 1)
     CannyModel()
-'''
+    '''
+
+    with_mom = ExecuteLambda("IMAGE_READ",'girl_with_mom.jpg')
+    with_mom = Mosaic(with_mom, 10)
+    cv.imshow("WITH MOM MOSAIC", with_mom)
+    cv.waitKey(0)
+    cv.destroyAllWindows()
+    cv.imwrite('./data/mosaic_with_mom.png', with_mom)

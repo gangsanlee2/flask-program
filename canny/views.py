@@ -1,6 +1,6 @@
 from matplotlib import pyplot as plt
 from PIL import Image
-from canny.services import ImageToNumberArray, ExecuteLambda, Hough, Haar
+from canny.services import ImageToNumberArray, ExecuteLambda, Hough, Haar, Mosaic
 import cv2 as cv
 import numpy as np
 
@@ -26,7 +26,7 @@ class MenuController(object):
         arr = ImageToNumberArray(params[1])
         # 람다식 내부에서 GRAYSCALE 변환 공식 사용함
         #img = ExecuteLambda('IMAGE_READ', arr)
-        plt.imshow(ExecuteLambda('FROMARRAY',arr))
+        plt.imshow(ExecuteLambda('FROM_ARRAY',arr))
         plt.show()
 
     @staticmethod
@@ -71,33 +71,47 @@ class MenuController(object):
 
         girl = params[2]
         girl = ExecuteLambda("IMAGE_READ", girl)
-        girl = cv.cvtColor(girl, cv.COLOR_BGR2RGB)
+        girl_o = cv.cvtColor(girl, cv.COLOR_BGR2RGB)
 
-        gray = ExecuteLambda('GRAYSCALE',girl)
+        gray = ExecuteLambda('GRAYSCALE',girl_o)
 
-        edges = cv.Canny(np.array(girl), 10, 100)
+        edges = cv.Canny(np.array(girl_o), 10, 100)
 
         dst = Hough(edges)
 
-        plt.subplot(151), plt.imshow(girl)
+        plt.subplot(161), plt.imshow(girl_o)
         plt.title('Original Image'), plt.xticks([]), plt.yticks([])
 
-        xml = params[1]
-        Haar(girl, xml)
+        girl = Mosaic(girl_o,10)
 
-        plt.subplot(152), plt.imshow(gray, cmap='gray')
+        xml = params[1]
+        girl_in_rec = Haar(girl_o, xml)
+
+        plt.subplot(162), plt.imshow(gray, cmap='gray')
         plt.title('Gray Image'), plt.xticks([]), plt.yticks([])
-        plt.subplot(153), plt.imshow(edges, cmap='gray')
+        plt.subplot(163), plt.imshow(edges, cmap='gray')
         plt.title('Canny Image'), plt.xticks([]), plt.yticks([])
-        plt.subplot(154), plt.imshow(dst, cmap='gray')
+        plt.subplot(164), plt.imshow(dst, cmap='gray')
         plt.title('Hough Image'), plt.xticks([]), plt.yticks([])
-        plt.subplot(155), plt.imshow(girl)
+        plt.subplot(165), plt.imshow(girl_in_rec)
         plt.title('Haar Image'), plt.xticks([]), plt.yticks([])
+        plt.subplot(166), plt.imshow(girl)
+        plt.title('Mosaic Image'), plt.xticks([]), plt.yticks([])
+
         plt.show()
 
-        girl = cv.cvtColor(girl, cv.COLOR_RGB2BGR)
-        cv.imwrite('./data/girl-face.png', girl)
+        #girl = cv.cvtColor(girl, cv.COLOR_RGB2BGR)
+        #cv.imwrite('./data/girl-face.png', girl)
+
+        #girl = cv.cvtColor(girl, cv.COLOR_RGB2BGR)
+        #cv.imwrite('./data/girl-mosaic.png', girl)
 
     @staticmethod
     def menu_6(*params):
         print(params[0])
+        cat = ExecuteLambda("IMAGE_READ", params[1])
+        mos = Mosaic(cat, 10)
+        cv.imwrite('./data/cat-mosaic.png', mos)
+        cv.imshow("CAT MOSAIC", mos)
+        cv.waitKey(0)
+        cv.destroyAllWindows()
