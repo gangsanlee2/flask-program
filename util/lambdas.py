@@ -6,7 +6,7 @@ def MosaicLambdas(cmd, target): #Command Pattern
     #cmd = params[0]
     #target = params[1]
     if cmd == 'IMAGE_READ':
-        return (lambda x: cv.imread('./data/' + x))(target)
+        return (lambda x: cv.imread('./data/'+x))(target)
     elif cmd == 'GRAYSCALE':
         return (lambda x: cv.cvtColor(x, cv.COLOR_BGR2GRAY))(target)
     elif cmd == 'FROM_ARRAY':

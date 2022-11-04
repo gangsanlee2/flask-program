@@ -127,8 +127,20 @@ def Haar(*params):
         print(f'얼굴의 좌표 : {x},{y},{w},{h}')
         red = (255, 0, 0)
         img = cv.rectangle(params[0], (x, y), (x + w, y + h), red, thickness=20)
-        return img
-def Mosaic(img, size):
+        return (x, y, x+w, y+h)
+
+def Mosaic(img, rect, size):
+    (x1, y1, x2, y2) = rect
+    w = x2 - x1
+    h = y2 - y1
+    i_rect = img[y1:y2, x1:x2]
+    i_small = cv.resize(i_rect, (size, size))
+    i_mos = cv.resize(i_small, (w, h), interpolation=cv.INTER_AREA)
+    img2 = img.copy()
+    img2[y1:y2, x1:x2] = i_mos
+    return img2
+
+def Mosaics(img, size):
     haar = cv.CascadeClassifier('./data/haarcascade_frontalface_alt.xml')
     face = haar.detectMultiScale(img, minSize=(150, 150))
     if len(face) == 0:
@@ -143,9 +155,9 @@ def Mosaic(img, size):
         i_rect = img[y1:y2, x1:x2]
         i_small = cv.resize(i_rect, (size, size))
         i_mos = cv.resize(i_small, (x2-x1, y2-y1), interpolation=cv.INTER_AREA)
-        img2 = img.copy()
-        img2[y1:y2, x1:x2] = i_mos
-    return img2
+
+        img[y1:y2, x1:x2] = i_mos
+    return img
 
 def filter2D(src, kernel, delta=0):
     # 가장자리 픽셀을 (커널의 길이 // 2) 만큼 늘리고 새로운 행렬에 저장
@@ -197,7 +209,7 @@ if __name__ == '__main__':
     '''
 
     with_mom = MosaicLambdas("IMAGE_READ",'girl_with_mom.jpg')
-    with_mom = Mosaic(with_mom, 10)
+    with_mom = Mosaics(with_mom, 10)
     cv.imshow("WITH MOM MOSAIC", with_mom)
     cv.waitKey(0)
     cv.destroyAllWindows()

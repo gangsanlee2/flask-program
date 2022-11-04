@@ -1,6 +1,6 @@
 from matplotlib import pyplot as plt
 from PIL import Image
-from canny.services import ImageToNumberArray, Hough, Haar, Mosaic
+from mosaic.services import ImageToNumberArray, Hough, Haar, Mosaic, Mosaics
 import cv2 as cv
 import numpy as np
 import copy
@@ -73,23 +73,11 @@ class MenuController(object):
     def menu_5(*params):
         print(params[0])
         cat = MosaicLambdas("IMAGE_READ", params[1])
-        mos = Mosaic(cat, 10)
+        mos = Mosaic(cat, (200,200,300,300), 10)
         cv.imwrite('./data/cat-mosaic.png', mos)
         cv.imshow("CAT MOSAIC", mos)
         cv.waitKey(0)
         cv.destroyAllWindows()
-    '''
-    def mosaic(img, rect, size):
-        (x1, y1, x2, y2) = rect
-        w = x2 - x1
-        h = y2 - y1
-        i_rect = img[y1:y2, x1:x2]
-        i_small = cv.resize(i_rect, (size, size))
-        i_mos = cv.resize(i_small, (w, h), interpolation=cv.INTER_AREA)
-        img2 = img.copy()
-        img2[y1:y2, x1:x2] = i_mos
-        return img2
-    '''
 
     @staticmethod
     def menu_6(*params):
@@ -100,23 +88,23 @@ class MenuController(object):
         girl = cv.cvtColor(girl, cv.COLOR_BGR2RGB)
         girl_for_haar = copy.deepcopy(girl)
         gray = MosaicLambdas('GRAYSCALE',girl)
-        edges = cv.Canny(np.array(girl), 1, 1000)
+        edges = cv.Canny(np.array(girl), 100, 200)
         dst = Hough(edges)
         xml = params[1]
-        girl_in_rec = Haar(girl_for_haar, xml)
-        mosaic = Mosaic(girl, 10)
+        rect = Haar(girl_for_haar, xml)
+        girl_mosaic = Mosaic(girl, rect, 10)
 
         plt.subplot(161), plt.imshow(girl)
-        plt.title('Original Image'), plt.xticks([]), plt.yticks([])
+        plt.title('Original'), plt.xticks([]), plt.yticks([])
         plt.subplot(162), plt.imshow(gray, cmap='gray')
         plt.title('Gray'), plt.xticks([]), plt.yticks([])
         plt.subplot(163), plt.imshow(edges, cmap='gray')
         plt.title('Canny'), plt.xticks([]), plt.yticks([])
         plt.subplot(164), plt.imshow(dst, cmap='gray')
         plt.title('Hough'), plt.xticks([]), plt.yticks([])
-        plt.subplot(165), plt.imshow(girl_in_rec)
+        plt.subplot(165), plt.imshow(girl_for_haar)
         plt.title('Haar'), plt.xticks([]), plt.yticks([])
-        plt.subplot(166), plt.imshow(mosaic)
+        plt.subplot(166), plt.imshow(girl_mosaic)
         plt.title('Mosaic'), plt.xticks([]), plt.yticks([])
 
         plt.show()
@@ -127,5 +115,11 @@ class MenuController(object):
         #girl = cv.cvtColor(girl, cv.COLOR_RGB2BGR)
         #cv.imwrite('./data/girl-mosaic.png', girl)
 
-    def menu_7(self):
-        pass
+    def menu_7(*params):
+        print(params[0])
+        with_mom = MosaicLambdas("IMAGE_READ", params[1])
+        with_mom = Mosaics(with_mom, 10)
+        cv.imshow("WITH MOM MOSAIC", with_mom)
+        cv.waitKey(0)
+        cv.destroyAllWindows()
+        #cv.imwrite('./data/mosaic_with_mom.png', with_mom)
