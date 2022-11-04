@@ -1,8 +1,12 @@
 from matplotlib import pyplot as plt
 from PIL import Image
-from canny.services import ImageToNumberArray, ExecuteLambda, Hough, Haar, Mosaic
+from canny.services import ImageToNumberArray, Hough, Haar, Mosaic
 import cv2 as cv
 import numpy as np
+import copy
+
+from util.lambdas import MosaicLambdas
+
 
 class MenuController(object):
 
@@ -13,7 +17,7 @@ class MenuController(object):
     @staticmethod
     def menu_1(*params):
         print(params[0])
-        img = ExecuteLambda('IMAGE_READ', params[1])
+        img = MosaicLambdas('IMAGE_READ', params[1])
         print(f'cv2 버전 {cv.__version__}')  # cv2 버전 4.6.0
         print(f' Shape is {img.shape}')
         cv.imshow('Original', img)
@@ -26,7 +30,7 @@ class MenuController(object):
         arr = ImageToNumberArray(params[1])
         # 람다식 내부에서 GRAYSCALE 변환 공식 사용함
         #img = ExecuteLambda('IMAGE_READ', arr)
-        plt.imshow(ExecuteLambda('FROM_ARRAY',arr))
+        plt.imshow(Lambdas('FROM_ARRAY',arr))
         plt.show()
 
     @staticmethod
@@ -68,35 +72,52 @@ class MenuController(object):
     @staticmethod
     def menu_5(*params):
         print(params[0])
+        cat = MosaicLambdas("IMAGE_READ", params[1])
+        mos = Mosaic(cat, 10)
+        cv.imwrite('./data/cat-mosaic.png', mos)
+        cv.imshow("CAT MOSAIC", mos)
+        cv.waitKey(0)
+        cv.destroyAllWindows()
+    '''
+    def mosaic(img, rect, size):
+        (x1, y1, x2, y2) = rect
+        w = x2 - x1
+        h = y2 - y1
+        i_rect = img[y1:y2, x1:x2]
+        i_small = cv.resize(i_rect, (size, size))
+        i_mos = cv.resize(i_small, (w, h), interpolation=cv.INTER_AREA)
+        img2 = img.copy()
+        img2[y1:y2, x1:x2] = i_mos
+        return img2
+    '''
+
+    @staticmethod
+    def menu_6(*params):
+        print(params[0])
 
         girl = params[2]
-        girl = ExecuteLambda("IMAGE_READ", girl)
-        girl_o = cv.cvtColor(girl, cv.COLOR_BGR2RGB)
-
-        gray = ExecuteLambda('GRAYSCALE',girl_o)
-
-        edges = cv.Canny(np.array(girl_o), 10, 100)
-
+        girl = MosaicLambdas("IMAGE_READ", girl)
+        girl = cv.cvtColor(girl, cv.COLOR_BGR2RGB)
+        girl_for_haar = copy.deepcopy(girl)
+        gray = MosaicLambdas('GRAYSCALE',girl)
+        edges = cv.Canny(np.array(girl), 1, 1000)
         dst = Hough(edges)
-
-        plt.subplot(161), plt.imshow(girl_o)
-        plt.title('Original Image'), plt.xticks([]), plt.yticks([])
-
-        girl = Mosaic(girl_o,10)
-
         xml = params[1]
-        girl_in_rec = Haar(girl_o, xml)
+        girl_in_rec = Haar(girl_for_haar, xml)
+        mosaic = Mosaic(girl, 10)
 
+        plt.subplot(161), plt.imshow(girl)
+        plt.title('Original Image'), plt.xticks([]), plt.yticks([])
         plt.subplot(162), plt.imshow(gray, cmap='gray')
-        plt.title('Gray Image'), plt.xticks([]), plt.yticks([])
+        plt.title('Gray'), plt.xticks([]), plt.yticks([])
         plt.subplot(163), plt.imshow(edges, cmap='gray')
-        plt.title('Canny Image'), plt.xticks([]), plt.yticks([])
+        plt.title('Canny'), plt.xticks([]), plt.yticks([])
         plt.subplot(164), plt.imshow(dst, cmap='gray')
-        plt.title('Hough Image'), plt.xticks([]), plt.yticks([])
+        plt.title('Hough'), plt.xticks([]), plt.yticks([])
         plt.subplot(165), plt.imshow(girl_in_rec)
-        plt.title('Haar Image'), plt.xticks([]), plt.yticks([])
-        plt.subplot(166), plt.imshow(girl)
-        plt.title('Mosaic Image'), plt.xticks([]), plt.yticks([])
+        plt.title('Haar'), plt.xticks([]), plt.yticks([])
+        plt.subplot(166), plt.imshow(mosaic)
+        plt.title('Mosaic'), plt.xticks([]), plt.yticks([])
 
         plt.show()
 
@@ -106,12 +127,5 @@ class MenuController(object):
         #girl = cv.cvtColor(girl, cv.COLOR_RGB2BGR)
         #cv.imwrite('./data/girl-mosaic.png', girl)
 
-    @staticmethod
-    def menu_6(*params):
-        print(params[0])
-        cat = ExecuteLambda("IMAGE_READ", params[1])
-        mos = Mosaic(cat, 10)
-        cv.imwrite('./data/cat-mosaic.png', mos)
-        cv.imshow("CAT MOSAIC", mos)
-        cv.waitKey(0)
-        cv.destroyAllWindows()
+    def menu_7(self):
+        pass

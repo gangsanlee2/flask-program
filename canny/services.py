@@ -6,6 +6,8 @@ import requests
 import cv2 as cv
 import matplotlib.pyplot as plt
 
+from util.lambdas import MosaicLambdas
+
 
 def ImageToNumberArray(url):
     res = requests.get(url, headers={'User-Agent': 'My User Agent 1.0'})
@@ -167,25 +169,17 @@ def filter2D(src, kernel, delta=0):
     def new_model(self, fname) -> object:
         return cv2.imread('./data/' + fname)
     '''
-
+'''
 def image_read(fname) -> object:
     return (lambda x: cv.imread('./data/' + x))(fname)
-
+'''
 '''
 def gray_scale(img):
     dst = img[:, :, 0] * 0.114 + img[:, :, 1] * 0.587 + img[:, :, 2] * 0.229  # GRAYSCALE 변환 공식
     return dst
 '''
 
-def ExecuteLambda(cmd, target): #Command Pattern
-    #cmd = params[0]
-    #target = params[1]
-    if cmd == 'IMAGE_READ':
-        return (lambda x: image_read(x))(target)
-    elif cmd == 'GRAYSCALE':
-        return (lambda x: cv.cvtColor(x, cv.COLOR_BGR2GRAY))(target)
-    elif cmd == 'FROM_ARRAY':
-        return (lambda x: Image.fromarray(x))(target)
+
 
 if __name__ == '__main__':
     '''
@@ -202,7 +196,7 @@ if __name__ == '__main__':
     CannyModel()
     '''
 
-    with_mom = ExecuteLambda("IMAGE_READ",'girl_with_mom.jpg')
+    with_mom = MosaicLambdas("IMAGE_READ",'girl_with_mom.jpg')
     with_mom = Mosaic(with_mom, 10)
     cv.imshow("WITH MOM MOSAIC", with_mom)
     cv.waitKey(0)
