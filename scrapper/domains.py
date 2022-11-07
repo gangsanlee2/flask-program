@@ -1,11 +1,10 @@
 # db에 저장할거면 모델(도메인) 쓰고 더이상 필요없으면 services에서 함수형으로 사용
-from dataclasses import dataclass
 import urllib
+from dataclasses import dataclass
 from urllib.request import urlopen
 
 import pandas as pd
 from bs4 import BeautifulSoup
-
 from const.path import CTX
 
 """
@@ -42,7 +41,7 @@ class BugsMusic:    #class BugsMusic(object) 파이썬에서 object 생략 가�
         for i,j in zip(titles,artists):
             _ += 1
             print(f"{_}위 {i.find('a').text} - {j.find('a').text}")
-        
+"""
 class Melon(object):
     def __init__(self, url):
         self.url = url
@@ -59,9 +58,9 @@ class Melon(object):
         for i,j in zip(titles, artists):
             _ += 1
             print(f"{_}위 {i.find('a').text} - {j.find('a').text}")
-"""
+
 @dataclass
-class MusicRanking:
+class MusicRanking():
     html : str
     parser : str
     domain : str
@@ -69,7 +68,7 @@ class MusicRanking:
     headers : dict
     tag_name : str
     fname : str
-    class_names : list
+    class_names : []
     artists : list
     titles : list
     dic : dict
@@ -79,55 +78,67 @@ class MusicRanking:
     @property
     def html(self): return self._html
     @html.setter
-    def context(self, html): self._html = html
+    def html(self, html): self._html = html
+
     @property
     def parser(self): return self._parser
     @parser.setter
-    def context(self, parser): self._parser = parser
+    def parser(self, parser): self._parser = parser
+
     @property
     def domain(self): return self._domain
     @domain.setter
-    def context(self, domain): self._domain = domain
+    def domain(self, domain): self._domain = domain
+
     @property
     def query_string(self): return self._query_string
     @query_string.setter
-    def context(self, query_string): self._query_string = query_string
+    def query_string(self, query_string): self._query_string = query_string
+
     @property
     def headers(self): return self._headers
     @headers.setter
-    def context(self, headers): self._headers = headers
+    def headers(self, headers): self._headers = headers
+
     @property
     def tag_name(self): return self._tag_name
     @tag_name.setter
-    def context(self, tag_name): self._tag_name = tag_name
+    def tag_name(self, tag_name): self._tag_name = tag_name
+
     @property
     def fname(self): return self._fname
     @fname.setter
-    def context(self, fname): self._fname = fname
+    def fname(self, fname): self._fname = fname
+
     @property
     def class_names(self): return self._class_names
     @class_names.setter
-    def context(self, class_names): self._class_names = class_names
+    def class_names(self, class_names): self._class_names = class_names
+
     @property
     def artists(self): return self._artists
     @artists.setter
-    def context(self, artists): self._artists = artists
+    def artists(self, artists): self._artists = artists
+
     @property
     def titles(self): return self._titles
     @titles.setter
-    def context(self, titles): self._titles = titles
+    def titles(self, titles): self._titles = titles
+
     @property
     def dic(self): return self._dic
     @dic.setter
-    def context(self, dic): self._dic = dic
+    def dic(self, dic): self._dic = dic
+
     @property
     def df(self): return self._df
     @df.setter
-    def context(self, df): self._df = df
+    def df(self, df): self._df = df
+
     @property
     def soup(self) -> BeautifulSoup: return self._soup
     @soup.setter
-    def train(self, soup): self._soup = soup
+    def soup(self, soup): self._soup = soup
 
     def dict_to_dataframe(self):
         self.df = pd.DataFrame.from_dict(self.dic, orient='index')

@@ -1,15 +1,24 @@
-from fake_scrapper.views import ScrappController
-from util.common import Common
+from fake_scrapper.views import ScrapController
 
-if __name__ == '__main__':
-    api = ScrappController()
+if __name__ == "__main__":
     while True:
-        menus = ["종료", "벅스 뮤직"]
-        menu = Common.menu(menus)
-        if menu == "0":
-            api.menu_0(menus[0])
+        api = ScrapController()
+        ls = ["close", "bugs", "melon"]
+        for i,j in enumerate(ls):
+            print(f"{i}.{j}")
+        menu = int(input("메뉴선택 : "))
+        if menu == 0:
+            print(ls[0])
             break
-        elif menu == "1":
-            api.menu_1(menus[1])
+        elif menu == 1:
+            print(ls[1])
+            api.menu_1(url="https://music.bugs.co.kr/chart/track/realtime/total")
+        elif menu == 2:
+            print(ls[2])
+            api.menu_2(url="https://www.melon.com/chart/index.htm")
         else:
-            print(" ### 해당 메뉴 없음 ### ")
+            print(" wrong menu ")
+
+
+
+

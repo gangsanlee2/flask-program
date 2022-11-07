@@ -16,8 +16,7 @@ if __name__ == '__main__':
             m.domain = "https://music.bugs.co.kr/chart/track/day/total?chartdate="
             m.query_string = "20221101"
             m.parser = "lxml"
-            m.class_names.append("title")
-            m.class_names.append("artist")
+            m.class_names=["title","artist"]
             m.tag_name = "p"
             api.menu_1(m)
         elif menu == "2":
