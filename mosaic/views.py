@@ -30,7 +30,7 @@ class MenuController(object):
         arr = ImageToNumberArray(params[1])
         # 람다식 내부에서 GRAYSCALE 변환 공식 사용함
         #img = ExecuteLambda('IMAGE_READ', arr)
-        plt.imshow(Lambdas('FROM_ARRAY',arr))
+        plt.imshow(MosaicLambdas('FROM_ARRAY',arr))
         plt.show()
 
     @staticmethod
@@ -115,11 +115,24 @@ class MenuController(object):
         #girl = cv.cvtColor(girl, cv.COLOR_RGB2BGR)
         #cv.imwrite('./data/girl-mosaic.png', girl)
 
+    @staticmethod
     def menu_7(*params):
         print(params[0])
         with_mom = MosaicLambdas("IMAGE_READ", params[1])
-        with_mom = Mosaics(with_mom, 10)
-        cv.imshow("WITH MOM MOSAIC", with_mom)
+        with_mom = cv.cvtColor(with_mom, cv.COLOR_RGB2BGR)
+        with_mom_mosaics = Mosaics(with_mom, 10)
+
+        plt.subplot(121), plt.imshow(with_mom)
+        plt.title('Original'), plt.xticks([]), plt.yticks([])
+        plt.subplot(122), plt.imshow(with_mom_mosaics)
+        plt.title('Mosaics'), plt.xticks([]), plt.yticks([])
+        plt.show()
+
+        '''
+        cv.imshow("WITH MOM MOSAIC", with_mom_mosaics)
         cv.waitKey(0)
         cv.destroyAllWindows()
-        #cv.imwrite('./data/mosaic_with_mom.png', with_mom)
+        cv.imwrite('./data/mosaics_with_mom.png', with_mom_mosaics)
+        '''
+
+    

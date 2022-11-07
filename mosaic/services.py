@@ -14,6 +14,8 @@ def ImageToNumberArray(url):
     image = Image.open(BytesIO(res.content))
     return np.array(image)
 
+
+
 def GaussianBlur(src, sigmax, sigmay):
     # 가로 커널과 세로 커널 행렬을 생성
     i = np.arange(-4 * sigmax, 4 * sigmax + 1)
@@ -116,7 +118,7 @@ def Hough(edges):
     return dst
 
 def Haar(*params):
-    #girl = params[0]
+    #img = params[0]
     #xml = params[1]
     haar = cv.CascadeClassifier('./data/' + params[1])
     face = haar.detectMultiScale(params[0], minSize=(150, 150))
@@ -126,7 +128,7 @@ def Haar(*params):
     for (x, y, w, h) in face:
         print(f'얼굴의 좌표 : {x},{y},{w},{h}')
         red = (255, 0, 0)
-        img = cv.rectangle(params[0], (x, y), (x + w, y + h), red, thickness=20)
+        cv.rectangle(params[0], (x, y), (x + w, y + h), red, thickness=20)
         return (x, y, x+w, y+h)
 
 def Mosaic(img, rect, size):
@@ -155,7 +157,6 @@ def Mosaics(img, size):
         i_rect = img[y1:y2, x1:x2]
         i_small = cv.resize(i_rect, (size, size))
         i_mos = cv.resize(i_small, (x2-x1, y2-y1), interpolation=cv.INTER_AREA)
-
         img[y1:y2, x1:x2] = i_mos
     return img
 
