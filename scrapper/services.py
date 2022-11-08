@@ -1,27 +1,41 @@
+import urllib
+from dataclasses import dataclass
+import pandas as pd
+from bs4 import BeautifulSoup
 from urllib.request import urlopen
 
-from bs4 import BeautifulSoup
-
-from scrapper import MusicRanking
-
-
 def BugsMusic(arg):
-    arg = MusicRanking()
-    soup = BeautifulSoup(urlopen(arg.domain+arg.query_string), 'lxml')
+    soup = BeautifulSoup(urlopen(arg.domain + arg.query_string), 'lxml')
     title = {"class": arg.class_names[0]}
     artist = {"class": arg.class_names[1]}
     titles = soup.find_all(name=arg.tag_name, attrs=title)
+    titles = [i.find('a').text for i in titles]
     artists = soup.find_all(name=arg.tag_name, attrs=artist)
-    # 디버깅
-    _ = 0
-    for i, j in zip(titles, artists):
-        _ += 1
-        print(f"{_}위 {i.find('a').text} - {j.find('a').text}")
-
-    #dictionary 로 변환
-    for i in range(0, len(titles)):    # len = length
-        arg.dic[arg.titles[i]] = arg.artists[i] # keys=titles, values=artists
-
-    # csv 파일로 저장
+    artists = [i.find('a').text for i in artists]
+    [print(f"{i+1}위 {j} : {k}") # 디버깅
+     for i, j, k in zip(range(0, len(titles)), titles, artists)]
+    diction = {} # dict 로 변환
+    for i, j in enumerate(titles):
+        diction[j] = artists[i]
+    arg.diction = diction
     arg.dict_to_dataframe()
-    arg.dataframe_to_csv()
+    arg.dataframe_to_csv() # csv파일로 저장
+
+
+def Melon(arg):
+        req = urllib.request.Request(arg.domain + arg.query_string, headers= {'User-Agent': 'Mozilla/5.0'})
+        soup = BeautifulSoup(urlopen(req), 'lxml')
+        title = {"class": arg.class_names[0]}
+        artist = {"class": arg.class_names[1]}
+        titles = soup.find_all(name=arg.tag_name, attrs=title)
+        titles = [i.find('a').text for i in titles]
+        artists = soup.find_all(name=arg.tag_name, attrs=artist)
+        artists = [i.find('a').text for i in artists]
+        [print(f"{i + 1}위 {j} : {k}")  # 디버깅
+         for i, j, k in zip(range(0, len(titles)), titles, artists)]
+        diction = {}  # dict 로 변환
+        for i, j in enumerate(titles):
+            diction[j] = artists[i]
+        arg.diction = diction
+        arg.dict_to_dataframe()
+        arg.dataframe_to_csv()  # csv파일로 저장

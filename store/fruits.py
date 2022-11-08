@@ -1,6 +1,7 @@
+import pandas as pd
+
 from util.common import Common
-
-
+'''
 class Fruits(object):
 
     def __init__(self, name, won):
@@ -23,3 +24,31 @@ class Fruits(object):
     @staticmethod
     def new_fruits():
         return Fruits(input(" 이름 : "), int(input(" 가격 : ")))
+'''
+
+def new_fruits_df():
+    ls_th = ['제품','가격','판매량']
+    ls_name = ['사과','딸기','수박']
+    ls_price = [1800,1500,3000]
+    ls_amount = [24,38,13]
+    ls_tb = [ls_name,ls_price,ls_amount]
+    '''
+    dc = {}
+    for i,j in enumerate(ls_th):
+        dc[j] = ls_tb[i]
+    '''
+    # pythonic by comprehension
+    dc = {j : ls_tb[i] for i,j in enumerate(ls_th)}
+
+    df = pd.DataFrame(dc)
+
+    print(dc)
+    print('*' * 20)
+    print(df)
+    print('*' * 20)
+    print(f'평균 가격 : {int(df["가격"].mean())}')
+    print('*' * 20)
+    print(f"평균 판매량 : {int(df['판매량'].mean())}")
+
+if __name__ == "__main__":
+    new_fruits_df()

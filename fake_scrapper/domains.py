@@ -4,7 +4,7 @@ from urllib.request import urlopen
 from bs4 import BeautifulSoup
 
 
-class Bugs:
+class Bugs:         #class BugsMusic(object) 파이썬에서 object 생략 가능
     def __init__(self,url):
         self.url = url
 

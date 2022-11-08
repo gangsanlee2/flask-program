@@ -42,25 +42,9 @@ class BugsMusic:    #class BugsMusic(object) 파이썬에서 object 생략 가�
             _ += 1
             print(f"{_}위 {i.find('a').text} - {j.find('a').text}")
 """
-class Melon(object):
-    def __init__(self, url):
-        self.url = url
-        self.headers = {'User-Agent': 'Mozilla/5.0'}
-
-    def scrap(self):
-        req = urllib.request.Request(self.url, headers= self.headers)
-        soup = BeautifulSoup(urlopen(req),'lxml')
-        _ = 0
-        title = {"class":"ellipsis rank01"}
-        artist = {"class":"ellipsis rank02"}
-        titles = soup.find_all(name="div", attrs=title)
-        artists = soup.find_all(name="div", attrs=artist)
-        for i,j in zip(titles, artists):
-            _ += 1
-            print(f"{_}위 {i.find('a').text} - {j.find('a').text}")
 
 @dataclass
-class MusicRanking():
+class Scrap:
     html : str
     parser : str
     domain : str
@@ -69,9 +53,9 @@ class MusicRanking():
     tag_name : str
     fname : str
     class_names : []
-    artists : list
-    titles : list
-    dic : dict
+    artists : []
+    titles : []
+    diction : {}
     df : None
     soup : BeautifulSoup
 
@@ -126,9 +110,9 @@ class MusicRanking():
     def titles(self, titles): self._titles = titles
 
     @property
-    def dic(self): return self._dic
-    @dic.setter
-    def dic(self, dic): self._dic = dic
+    def diction(self): return self._diction
+    @diction.setter
+    def diction(self, diction): self._diction = diction
 
     @property
     def df(self): return self._df
@@ -141,8 +125,9 @@ class MusicRanking():
     def soup(self, soup): self._soup = soup
 
     def dict_to_dataframe(self):
-        self.df = pd.DataFrame.from_dict(self.dic, orient='index')
+        print(len(self.diction))
+        self.df = pd.DataFrame.from_dict(self.diction, orient='index')
 
     def dataframe_to_csv(self):
-        path = CTX+self.fname+'.csv'
-        self.df.to_csv(path, sep=',',na_rep="NaN")
+        path = './save/result.csv'
+        self.df.to_csv(path, sep=',',na_rep="NaN", header=None)
