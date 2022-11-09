@@ -119,76 +119,62 @@ class Mpg:
 if __name__ == "__main__":
     m = Mpg()
     while True:
-        menu = MENU        
+        menu = MENU
+        print("*"*100)
         for i, j in enumerate(menu):
             print(f'{i}.{j}')
         choice = int(input('메뉴 입력 : '))
+        print("*" * 100)
         if choice == 0:
-            print(menu[0])
+            print("종료")
             break
         elif choice == 1:
-            print(menu[1])
+            print("mpg 앞부분 확인")
             m.menu_1()
-            print("*" * 100)
         elif choice == 2:
-            print(menu[2])
+            print("mpg 뒷부분 확인")
             m.menu_2()
-            print("*" * 100)
         elif choice == 3:
-            print(menu[3])
+            print("행, 열 출력")
             m.menu_3()
-            print("*" * 100)
         elif choice == 4:
-            print(menu[4])
+            print("데이터 속성 확인")
             m.menu_4()
-            print("*" * 100)
         elif choice == 5:
-            print(menu[5])
+            print("요약 통계량 출력")
             m.menu_5()
-            print("*" * 100)
         elif choice == 6:
-            print(menu[6])
+            print("문자 변수 요약 통계량 함께 출력")
             m.menu_6()
-            print("*" * 100)
         elif choice == 7:
-            print(menu[7])
+            print("manufacturer를 company로 변경")
             m.menu_7()
-            print("*" * 100)
         elif choice == 8:
-            print(menu[8])
+            print("test 변수 생성")
             m.menu_8()
-            print("*" * 100)
         elif choice == 9:
-            print(menu[9])
+            print("test 빈도표 만들기")
             m.menu_9()
-            print("*" * 100)
         elif choice == 10:
-            print(menu[10])
+            print("test 빈도 막대 그래프 그리기")
             m.menu_10()
-            print("*" * 100)
         elif choice == 11:
-            print(menu[11])
+            print("displ(배기량)이 4이하와 5이상 자동차의 hwy(고속도로 연비) 비교")
             m.menu_11()
-            print("*" * 100)
         elif choice == 12:
-            print(menu[12])
+            print("아우디와 토요타 중 도시연비(cty) 평균이 높은 회사 검색")
             m.menu_12()
-            print("*" * 100)
         elif choice == 13:
-            print(menu[13])
+            print("쉐보레, 포드, 혼다 데이터 출력과 hwy 전체 평균")
             m.menu_13()
-            print("*" * 100)
         elif choice == 14:
-            print(menu[14])
+            print("suv / 컴팩 자동차 중 어떤 자동차의 도시연비 평균이 더 높은가?")
             m.menu_14()
-            print("*" * 100)
         elif choice == 15:
-            print(menu[15])
+            print("아우디차에서 고속도로 연비 1~5위 출력하시오")
             m.menu_15()
-            print("*" * 100)
         elif choice == 16:
-            print(menu[16])
+            print("평균연비가 가장 높은 자동차 1~3위 출력하시오")
             m.menu_16()
-            print("*" * 100)
         else:
             print(" 잘못된 메뉴 입력 ")
