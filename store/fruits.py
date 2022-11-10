@@ -1,8 +1,8 @@
-import numpy as np
-import pandas as pd
 from string import ascii_lowercase
 
-from util.common import Common
+import numpy as np
+import pandas as pd
+
 '''
 class Fruits(object):
 
@@ -56,15 +56,14 @@ def new_number_2d():
     print(pd.DataFrame(np.array([list(range(1,11)),
                                  list(range(11,21)),
                                  list(range(21,31))]),
-                       columns=list(ascii_lowercase)[:10]))
+                       columns=list(ascii_lowercase)[:10]))     # <-> ascii_uppercase
 
 
 if __name__ == "__main__":
     while True:
         menu = ['종료','과일2D','숫자2D']
         print('*'*100)
-        for i,j in enumerate(menu):
-            print(f'{i}.{j}')
+        [print(f'{i}.{j}') for i,j in enumerate(menu)]
         choice = int(input('메뉴선택:'))
         print('*' * 100)
         if choice == 0:

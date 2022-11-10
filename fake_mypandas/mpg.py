@@ -29,6 +29,7 @@ MENU = ["종료",
         "평균연비가 가장 높은 자동차 1~3위 출력하시오"]
 
 class Mpg:
+    mpg = pd.read_csv('./data/mpg.csv')
     def __init__(self):
         self.mpg = pd.read_csv('./data/mpg.csv')
     def menu_1(self):
@@ -53,18 +54,16 @@ class Mpg:
         print(self.mpg.rename(columns={'manufacturer':'company'}))
 
     def menu_8(self):
-        mpg = self.mpg
+        mpg = Mpg.mpg
         mpg['total'] = (mpg['cty'] + mpg['hwy']) / 2
         mpg['test'] = np.where(mpg['total'] >= 20, 'pass', 'fail')
         print(mpg)
 
     def menu_9(self):
-        self.menu_8()
-        self.count_test = self.mpg['test'].value_counts()
+        self.count_test = Mpg.mpg['test'].value_counts()
         print(self.count_test)
 
     def menu_10(self):
-        self.menu_9()
         self.count_test.plot.bar(rot=0)
         plt.savefig('./save/mpg_graph.jpg')
 

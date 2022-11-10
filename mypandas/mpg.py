@@ -67,6 +67,7 @@ MENUS = ["종료","mpg 앞부분 확인",
          ]
 class Mpg:
 
+
     def __init__(self):
         self.mpg = pd.read_csv('./data/mpg.csv')
         self.my_mpg = None
