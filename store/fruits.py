@@ -1,4 +1,6 @@
+import numpy as np
 import pandas as pd
+from string import ascii_lowercase
 
 from util.common import Common
 '''
@@ -50,5 +52,29 @@ def new_fruits_df():
     print('*' * 20)
     print(f"평균 판매량 : {int(df['판매량'].mean())}")
 
+def new_number_2d():
+    print(pd.DataFrame(np.array([list(range(1,11)),
+                                 list(range(11,21)),
+                                 list(range(21,31))]),
+                       columns=list(ascii_lowercase)[:10]))
+
+
 if __name__ == "__main__":
-    new_fruits_df()
+    while True:
+        menu = ['종료','과일2D','숫자2D']
+        print('*'*100)
+        for i,j in enumerate(menu):
+            print(f'{i}.{j}')
+        choice = int(input('메뉴선택:'))
+        print('*' * 100)
+        if choice == 0:
+            print('종료')
+            break
+        elif choice == 1:
+            print('과일2D')
+            new_fruits_df()
+        elif choice == 2:
+            print('숫자2D')
+            new_number_2d()
+        else:
+            print('잘못된 메뉴 입력')

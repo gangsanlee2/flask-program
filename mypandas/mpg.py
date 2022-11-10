@@ -2,179 +2,197 @@ import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
 
-MENU = ["종료",
-        "mpg 앞부분 확인",
-        "mpg 뒷부분 확인",
-        "행, 열 출력",
-        "데이터 속성 확인",
-        "요약 통계량 출력",
-        "문자 변수 요약 통계량 함께 출력",
-        "manufacturer를 company로 변경",
-        "test 변수 생성",
-        # cty 와 hwy 변수를 머지(merge)하여 total
-        # 변수 생성하고 20이상이면 pass 미만이면 fail 저장
-        "test 빈도표 만들기",
-        "test 빈도 막대 그래프 그리기",
-        # mpg 144페이지 문제
-        "displ(배기량)이 4이하와 5이상 자동차의 hwy(고속도로 연비) 비교",
-        "아우디와 토요타 중 도시연비(cty) 평균이 높은 회사 검색",
-        "쉐보레, 포드, 혼다 데이터 출력과 hwy 전체 평균",
-        # mpg 150페이지 문제
-        # 메타데이터가 category, cty 데이터는 해당 raw 데이터인 객체생성
-        # 후 다음 문제 풀이
-        "suv / 컴팩 자동차 중 어떤 자동차의 도시연비 평균이 더 높은가?",
-        # mpg 153페이지 문제
-        "아우디차에서 고속도로 연비 1~5위 출력하시오",
-        # mpg 158페이지 문제
-        "평균연비가 가장 높은 자동차 1~3위 출력하시오"]
+'''
+Data columns (total 12 columns):
+ #   Column        Non-Null Count  Dtype  
+---  ------        --------------  -----  
+ 0   Unnamed: 0    234 non-null    int64  
+ 1   manufacturer : 회사  234 non-null    object 
+ 2   model : 모델        234 non-null    object 
+ 3   displ : 배기량         234 non-null    float64
+ 4   year : 연식         234 non-null    int64  
+ 5   cyl : 실린더          234 non-null    int64  
+ 6   trans : 차축        234 non-null    object 
+ 7   drv : 오토          234 non-null    object 
+ 8   cty : 시내연비          234 non-null    int64  
+ 9   hwy : 시외연비          234 non-null    int64  
+ 10  fl : 연료            234 non-null    object 
+ 11  class : 차종         234 non-null    object 
+dtypes: float64(1), int64(5), object(6)
+'''
+my_meta = {
+    "manufacturer": "회사",
+    "model": "모델",
+    "displ": "배기량",
+    "year": "연식",
+    "cyl": "실린더",
+    "trans": "차축",
+    "drv": "오토",
+    "cty": "시내연비",
+    "hwy": "시외연비",
+    "fl": "연료",
+    "class": "차종"
+}
+def my_menu(ls):
+    print(f'type is {type(ls)}')
+    for i, j in enumerate(ls):
+        print(f"{i}. {j}")
+    return input('메뉴선택: ')
 
+MENUS = ["종료","mpg 앞부분 확인",
+         "mpg 뒷부분 확인",
+         "행,열 출력",
+         "데이터 속성 확인",
+         "요약 통계량 출력",
+         "문자 변수 요약 통계량 함께 출력",
+         # mpg 129페이지
+         "manufacturer 를 company 로 변경",
+         "test 변수 생성" 
+         # cty 와 hwy 변수를 머지(merge)하여 total 
+         # 변수 생성하고 20이상이면 pass 미만이면 fail 저장
+         "test 빈도표 만들기",
+         "test 빈도 막대 그래프 그리기",
+         # mpg 144페이지 문제
+         "displ(배기량)이 4이하와 5이상 자동차의 hwy(고속도로 연비) 비교",
+         "아우디와 토요타 중 도시연비(cty) 평균이 높은 회사 검색",
+         "쉐보레, 포드, 혼다 데이터 출력과 hwy 전체 평균",
+         # mpg 150페이지 문제
+         # 메타데이터가 category, cty 데이터는 해당 raw 데이터인 객체생성
+         # 후 다음 문제 풀이
+         "suv / 컴팩 자동차 중 어떤 자동차의 도시연비 평균이 더 높은가?",
+         # mpg 153페이지 문제
+         "아우디차에서 고속도로 연비 1~5위 출력하시오",
+         # mpg 158페이지 문제
+         "평균연비가 가장 높은 자동차 1~3위 출력하시오"
+         ]
 class Mpg:
+
     def __init__(self):
         self.mpg = pd.read_csv('./data/mpg.csv')
-    def menu_1(self):
-        print(self.mpg.head())
+        self.my_mpg = None
+        self.count_test = None
 
-    def menu_2(self):
-        print(self.mpg.tail())
+    def head(self):
+        print(self.mpg.head(3))
 
-    def menu_3(self):
+    def tail(self):
+        print(self.mpg.tail(3))
+
+    def shape(self):
         print(self.mpg.shape)
 
-    def menu_4(self):
+    def info(self):
         print(self.mpg.info())
 
-    def menu_5(self):
+    def describe(self):
         print(self.mpg.describe())
 
-    def menu_6(self):
-        print(self.mpg.describe(include='all'))
+    def describe_include(self):
+        print(self.mpg.describe(include ='all'))
+    # "","manufacturer","model","displ","year",
+    # "cyl","trans","drv","cty","hwy","fl","class"
+    def change_meta(self):
+        self.my_mpg = self.mpg.rename(columns=my_meta)
+    def create_test_variable(self): # No.8
+        self.change_meta()
+        t = self.my_mpg
+        t['총연비'] = (t['시내연비'] + t['시외연비'])/2
+        t['연비테스트'] = np.where(t['총연비']>=20, 'pass', 'fail')
+        self.my_mpg = t
+        print(self.my_mpg.columns)
+        print(self.my_mpg.head())
 
-    def menu_7(self):
-        print(self.mpg.rename(columns={'manufacturer':'company'}))
-
-    def menu_8(self):
-        mpg = self.mpg
-        mpg['total'] = (mpg['cty'] + mpg['hwy']) / 2
-        mpg['test'] = np.where(mpg['total'] >= 20, 'pass', 'fail')
-        print(mpg)
-
-    def menu_9(self):
-        self.menu_8()
-        self.count_test = self.mpg['test'].value_counts()
+    def create_test_frequency(self): # No.9
+        self.create_test_variable()
+        t = self.my_mpg
+        self.count_test = t['연비테스트'].value_counts()
         print(self.count_test)
 
-    def menu_10(self):
-        self.menu_9()
+
+    def draw_freq_bar_graph(self): # No.10
+        self.create_test_frequency()
         self.count_test.plot.bar(rot=0)
-        plt.savefig('./save/mpg_graph.jpg')
+        plt.savefig('./save/draw_freq_bar_graph.png')
 
-    def menu_11(self):
-        avg_s = self.mpg.query('displ <= 4')['hwy'].mean()
-        avg_b = self.mpg.query('displ >= 5')['hwy'].mean()
-        if avg_s > avg_b:
-            print('배기량이 4 이하인 자동차가 5 이상인 자동차보다 고속도로 연비 평균이 더 높다')
-        elif avg_s == avg_b:
-            print('배기량이 4 이하인 자동차와 5 이상인 자동차의 고속도로 연비 평균이 같다')
-        else:
-            print('배기량이 4 이하인 자동차가 5 이상인 자동차보다 고속도로 연비 평균이 더 낮다')
+    def compare_displ_and_hwy(self):
+        pass
 
-    def menu_12(self):
-        avg_a = self.mpg.query('manufacturer == "audi"')['cty'].mean()
-        avg_t = self.mpg.query('manufacturer == "toyota"')['cty'].mean()
-        if avg_a > avg_t:
-            print('아우디가 토요타보다 도시 연비가 평균적으로 더 높다')
-        elif avg_a == avg_t:
-            print('아우디와 토요타의 평균 도시 연비는 같다')
-        else:
-            print('아우디가 토요타보다 도시 연비가 평균적으로 더 낮다')
+    def search_higher_cty(self):
+        pass
 
-    def menu_13(self):
-        cfh = self.mpg.query('manufacturer == "chevrolet" | manufacturer == "ford" | manufacturer == "honda"')
-        print(cfh['hwy'].mean())
+    def find_hwy_average(self):
+        pass
 
-    def menu_14(self):
-        mpg = self.mpg.rename(columns={'class':'category'})
-        mpg = mpg[['category','cty']]
-        avg_s = mpg.query('category == "suv"')['cty'].mean()
-        avg_c = mpg.query('category == "compact"')['cty'].mean()
-        if avg_s > avg_c:
-            print('suv가 compact보다 평균적으로 도시 연비가 더 높다')
-        elif avg_s == avg_c:
-            print('suv와 compact의 평균 도시 연비는 같다')
-        else: print('suv가 compact보다 평균적으로 도시 연비가 더 낮다')
+    def which_higher_between_suv_compact(self):
+        pass
 
-    def menu_15(self):
-        mpg = self.mpg.query('manufacturer == "audi"')
-        mpg = mpg.sort_values('cty', ascending=False)
-        mpg = mpg[['manufacturer','model','cty']]
-        print(mpg.head())
+    def search_hwy_in_audi_top5(self):
+        pass
 
-    def menu_16(self):
-        mpg = self.mpg
-        mpg['avg_mpg'] = (mpg['cty'] + mpg['hwy'])/2
-        mpg = mpg.sort_values('avg_mpg', ascending=False)
-        print(mpg.head(n=3))
+    def search_average_mileage_top3(self):
+        pass
 
 
-if __name__ == "__main__":
-    m = Mpg()
+if __name__ == '__main__':
+    t = Mpg()
     while True:
-        menu = MENU
-        print("*"*100)
-        for i, j in enumerate(menu):
-            print(f'{i}.{j}')
-        choice = int(input('메뉴 입력 : '))
-        print("*" * 100)
-        if choice == 0:
+        menu = my_menu(MENUS)
+        if menu == '0':
             print("종료")
             break
-        elif choice == 1:
+        elif menu == '1':
             print("mpg 앞부분 확인")
-            m.menu_1()
-        elif choice == 2:
+            t.head()
+        elif menu == '2':
             print("mpg 뒷부분 확인")
-            m.menu_2()
-        elif choice == 3:
-            print("행, 열 출력")
-            m.menu_3()
-        elif choice == 4:
+            t.tail()
+        elif menu == '3':
+            print("행,열 출력")
+            t.shape()
+        elif menu == '4':
             print("데이터 속성 확인")
-            m.menu_4()
-        elif choice == 5:
+            t.info()
+        elif menu == '5':
             print("요약 통계량 출력")
-            m.menu_5()
-        elif choice == 6:
+            t.describe()
+        elif menu == '6':
             print("문자 변수 요약 통계량 함께 출력")
-            m.menu_6()
-        elif choice == 7:
-            print("manufacturer를 company로 변경")
-            m.menu_7()
-        elif choice == 8:
+            t.describe_include()
+        elif menu == '7':
+            print("manufacturer 를 company 로 변경")
+            t.change_manufacturer_to_company()
+        elif menu == '8':
             print("test 변수 생성")
-            m.menu_8()
-        elif choice == 9:
+            # cty 와 hwy 변수를 머지(merge)하여 total
+            # 변수 생성하고 20이상이면 pass 미만이면 fail 저장
+            t.create_test_variable()
+        elif menu == '9':
             print("test 빈도표 만들기")
-            m.menu_9()
-        elif choice == 10:
+            t.create_test_frequency()
+        elif menu == '10':
             print("test 빈도 막대 그래프 그리기")
-            m.menu_10()
-        elif choice == 11:
+            t.draw_freq_bar_graph()
+        elif menu == '11':
+            # mpg 144페이지 문제
             print("displ(배기량)이 4이하와 5이상 자동차의 hwy(고속도로 연비) 비교")
-            m.menu_11()
-        elif choice == 12:
+            t.compare_displ_and_hwy()
+        elif menu == '12':
             print("아우디와 토요타 중 도시연비(cty) 평균이 높은 회사 검색")
-            m.menu_12()
-        elif choice == 13:
+            t.search_higher_cty()
+        elif menu == '13':
             print("쉐보레, 포드, 혼다 데이터 출력과 hwy 전체 평균")
-            m.menu_13()
-        elif choice == 14:
+            t.find_hwy_average()
+        elif menu == '14':
+            # mpg 150페이지 문제
+            # 메타데이터가 category, cty 데이터는 해당 raw 데이터인 객체생성
+            # 후 다음 문제 풀이
             print("suv / 컴팩 자동차 중 어떤 자동차의 도시연비 평균이 더 높은가?")
-            m.menu_14()
-        elif choice == 15:
+            t.which_higher_between_suv_compact()
+        elif menu == '15':
             print("아우디차에서 고속도로 연비 1~5위 출력하시오")
-            m.menu_15()
-        elif choice == 16:
+            t.search_hwy_in_audi_top5()
+        elif menu == '16':
             print("평균연비가 가장 높은 자동차 1~3위 출력하시오")
-            m.menu_16()
+            t.search_average_mileage_top3()
         else:
-            print(" 잘못된 메뉴 입력 ")
+            print("잘못된 번호입니다")
