@@ -6,11 +6,14 @@
 외부에 있는 파일을 가져와 쓸 때 → create_~
 '''
 
-
 import numpy as np
 import pandas as pd
 import seaborn as sns
 from util.dataset import Dataset
+from sklearn.model_selection import KFold
+from sklearn.model_selection import cross_val_score
+from sklearn.ensemble import RandomForestClassifier
+
 '''
 ['PassengerId', 'Survived', 'Pclass', 'Name', 'Sex', 'Age', 'SibSp',
                     'Parch', 'Ticket', 'Fare', 'Cabin', 'Embarked']
@@ -64,13 +67,13 @@ class TitanicModel(object):
             this.train = this.train.drop(i, axis = 1)
             this.test = this.test.drop(i, axis = 1)
         return this
-
+    '''
     @staticmethod
     def pclass_ordinal(this) -> object:
         train = this.train
         test = this.test
         return this
-
+    '''
     @staticmethod
     def sex_nominal(this) -> object:
         '''
@@ -144,6 +147,22 @@ class TitanicModel(object):
                 'Rare': 6
             })
         return this
+
+    @staticmethod
+    def create_k_fold() -> object:
+        return KFold(n_splits=10, shuffle=True, random_state=0)
+
+    @staticmethod
+    def get_accuracy(this):
+        score = cross_val_score(RandomForestClassifier(),
+                                this.train,
+                                this.label,
+                                cv=TitanicModel.create_k_fold(),
+                                n_jobs=1,
+                                scoring='accuracy')
+        return round(np.mean(score)*100,2)
+
+
 
 
 if __name__ == '__main__':   # 나중에 지워야 함. 단지 디버깅 목적

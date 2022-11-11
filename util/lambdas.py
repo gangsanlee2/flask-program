@@ -12,3 +12,4 @@ def MosaicLambdas(cmd, target): #Command Pattern
     elif cmd == 'FROM_ARRAY':
         return (lambda x: Image.fromarray(x))(target)
 
+

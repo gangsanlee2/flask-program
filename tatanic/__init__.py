@@ -1,3 +1,5 @@
+from sklearn.ensemble import RandomForestClassifier
+
 from tatanic.template import Plot
 from tatanic.views import TitanicController
 from util.common import Common
@@ -18,10 +20,21 @@ if __name__ == '__main__':
             plot.draw_embarked()
         elif menu == "2":
             print(" ### 모델링 ### ")
-            df = api.modeling('train.csv', 'test.csv')
+            this = api.modeling('train.csv', 'test.csv')
+            print(this.train.head())
+            print(this.train.columns)
         elif menu == "3":
             print(" ### 머신러닝 ### ")
-            df = api.learning('train.csv', 'test.csv')
+            api.learning('train.csv', 'test.csv')
+            '''
+            api.learning('train.csv', 'test.csv', "결정트리분류기")
+            api.learning('train.csv', 'test.csv', "로지스틱회귀")
+            api.learning('train.csv', 'test.csv', "서포트벡터머신")
+            #랜덤포레스트분류기: ? %
+            #결정트리분류기 : ? %
+            #로지스틱회귀 : ? %
+            #서포트벡터머신: ? %
+            '''
         elif menu == "4":
             print(" ### 배포 ### ")
             df = api.submit('train.csv', 'test.csv')
