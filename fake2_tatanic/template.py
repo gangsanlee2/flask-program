@@ -1,4 +1,4 @@
-from tatanic.models import TitanicModel
+from fake2_tatanic.models import TitanicModel
 from util.dataset import Dataset
 import matplotlib.pyplot as plt
 import seaborn as sns

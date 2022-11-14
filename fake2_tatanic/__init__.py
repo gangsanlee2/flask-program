@@ -1,7 +1,7 @@
 from sklearn.ensemble import RandomForestClassifier
 
-from tatanic.template import Plot
-from tatanic.views import TitanicController
+from fake2_tatanic.template import Plot
+from fake2_tatanic.views import TitanicController
 from util.common import Common
 
 if __name__ == '__main__':
