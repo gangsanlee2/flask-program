@@ -2,9 +2,14 @@ import pandas as pd
 from matplotlib import pyplot as plt
 import seaborn as sns
 from matplotlib import font_manager, rc
+from sklearn.preprocessing import OrdinalEncoder
+from imblearn.under_sampling import RandomUnderSampler
+from sklearn.model_selection import train_test_split
+
 font_path = "C:/Windows/Fonts/batang.ttc"
 font = font_manager.FontProperties(fname=font_path).get_name()
 rc('font', family=font)
+
 
 STROKE_MENUS = ["종료", #0
                 "데이터구하기",#1
@@ -16,17 +21,12 @@ STROKE_MENUS = ["종료", #0
                 "결측값이 50% 초과인 변수 제거",#7
                 "이상값 제거",#8
                 "csv 저장",#9
-                "데이터 추가 처리",#10
-                "데이터처리",
-                "시각화",
-                "모델링",
-                "학습",
-                "예측"]
+                "샘플링"]
+
 stroke_meta = {
     'id':'아이디', 'gender':'성별', 'age':'나이', 'hypertension':'고혈압', 'heart_disease':'심장병',
     'ever_married':'기혼여부', 'work_type':'직종', 'Residence_type':'거주형태',
-    'avg_glucose_level':'평균혈당', 'bmi':'체질량지수', 'smoking_status':'흡연상태', 'stroke':'뇌졸중'
-}
+    'avg_glucose_level':'평균혈당', 'bmi':'체질량지수', 'smoking_status':'흡연상태', 'stroke':'뇌졸중'}
 stroke_menu = {
     "1" : lambda t: t.spec(),
     "2" : lambda t: t.rename_meta(),
@@ -35,10 +35,9 @@ stroke_menu = {
     "5" : lambda t: t.interval_variable(),
     "6" : lambda t: t.categorical_variable(),
     "7" : lambda t: t.remove_null(),
-    "8": lambda t: t.remove_strange(),
-    "9": lambda t: t.save_preprocess(),
-    "10": lambda t: t.additional_process()
-
+    "8": lambda t: t.remove_outlier(),
+    "9": lambda t: t.additional_process(),
+    "10": lambda t: t.sampling()
 }
 '''
 <class 'pandas.core.frame.DataFrame'>
@@ -153,7 +152,7 @@ class StrokeService:
         print(pd.crosstab(df1['직종'],df1['뇌졸중']))
         print(pd.crosstab(df1['직종'],df1['뇌졸중'], normalize=True))
 
-    def remove_strange(self):
+    def remove_outlier(self):
         self.remove_null()
         df1 = self.df1
         df = self.my_stroke
@@ -182,7 +181,32 @@ class StrokeService:
         c2 = df1['체질량지수'] <= 60.3
         self.df2 = df1[c1 & c2]
         print(f'shape : {self.df2.shape}')
-
+        print(self.df2.info())
     def additional_process(self):
-        pass
-
+        df2 = self.df2
+        df2['성별'] = OrdinalEncoder().fit_transform(df2['성별'].values.reshape(-1, 1))
+        df2['기혼여부'] = OrdinalEncoder().fit_transform(df2['기혼여부'].values.reshape(-1, 1))
+        df2['직종'] = OrdinalEncoder().fit_transform(df2['직종'].values.reshape(-1, 1))
+        df2['거주형태'] = OrdinalEncoder().fit_transform(df2['거주형태'].values.reshape(-1, 1))
+        df2['흡연여부'] = OrdinalEncoder().fit_transform(df2['흡연여부'].values.reshape(-1, 1))
+        '''
+        self.df2 = df2
+        #self.spec()
+        print(" ### 프리프로세스 종료 ### ")
+        self.stroke.to_csv("./save/stroke.csv")
+        '''
+    def sampling(self):
+        df = pd.read_csv("./save/stroke.csv")
+        data = df.drop(['뇌졸중'], axis=1)
+        target = df['뇌졸중']
+        undersample = RandomUnderSampler(sampling_strategy=0.333, random_state=2)
+        data_under, target_under = undersample.fit_resample(data, target)
+        print(target_under.value_counts(dropna=True))
+        X_train, X_test, y_train, y_test = train_test_split(data_under, target_under,
+                                                            test_size=0.5, random_state=42, stratify=target_under)
+        print("X_train shape :", X_train.shape)
+        print("X_test shape :", X_test.shape)
+        print("y_train shape :", y_train.shape)
+        print("y_test shape :", y_test.shape)
+        print("y_train value ratio :\n", y_train.value_counts(normalize=True))
+        print("y_train value count :\n", y_train.value_counts())
