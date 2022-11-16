@@ -109,7 +109,6 @@ class Mpg:
         self.count_test = t['연비테스트'].value_counts()
         print(self.count_test)
 
-
     def draw_freq_bar_graph(self): # No.10
         self.create_test_frequency()
         self.count_test.plot.bar(rot=0)

@@ -118,6 +118,7 @@ class OklahomaService:
         self.label = okl['주택가격등급']
         print(self.data.shape)
         print(self.label.shape)
+        print(self.label.value_counts())
 
     def partition(self):
         self.target()
