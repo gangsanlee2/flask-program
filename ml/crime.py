@@ -6,13 +6,16 @@
 import googlemaps
 import numpy as np
 import pandas as pd
+from sklearn import preprocessing
+import folium
+import json
 
 CRIME_MENUS = ["close", # 0
                "spec", # 1
-               "Merge", # 2
-               "interval", # 3
-               "ratio", # 4
-               "nominal", # 5
+               "save police position", # 2
+               "save cctv position", # 3
+               "save police normalization", # 4
+               "folium example", # 5
                "ordinal", # 6
                "tatget", # 7
                "partition" # 8
@@ -20,9 +23,9 @@ CRIME_MENUS = ["close", # 0
 
 crime_menu = {"1": lambda t: t.spec(),
               "2": lambda t: t.save_police_pos(),
-              "3": lambda t: t.interval(),
-              "4": lambda t: t.ratio(),
-              "5": lambda t: t.nominal(),
+              "3": lambda t: t.save_cctv_pop(),
+              "4": lambda t: t.save_police_norm(),
+              "5": lambda t: t.folium_example(),
               "6": lambda t: t.ordinal(),
               "7": lambda t: t.target(),
               "8": lambda t: t.partition()
@@ -30,11 +33,18 @@ crime_menu = {"1": lambda t: t.spec(),
 
 class CrimeService:
     def __init__(self):
-        self.crime = pd.read_csv("./data/crime_in_seoul.csv")
+        self.crime = pd.read_csv('./data/crime_in_seoul.csv')
+        cols = ['절도 발생', '절도 검거', '폭력 발생', '폭력 검거']
+        self.crime[cols] = self.crime[cols].replace(',', '', regex=True).astype(int)
         self.cctv = pd.read_csv("./data/cctv_in_seoul.csv")
         self.ls = [self.crime,self.cctv]
         self.pop = pd.read_excel(io="./data/pop_in_seoul.xls", header=1,
                                  usecols=['자치구','합계','한국인','등록외국인','65세이상고령자'], skiprows=[2])
+        self.crime_rate_columns = ['살인검거율', '강도검거율', '강간검거율', '절도검거율', '폭력검거율']
+        self.crime_columns = ['살인', '강도', '강간', '절도', '폭력']
+        self.arrest_columns = ['살인 검거', '강도 검거', '강간 검거', '절도 검거', '폭력 검거']
+        self.us_states = './data/us-states.json'
+        self.us_unemployment = pd.read_csv('./data/us_unemployment.csv')
 
     '''
     def temp(self):
@@ -78,7 +88,7 @@ class CrimeService:
                           f"{x.describe(include='all')}"))(i)
          for i in self.ls]
 
-    def save_police_pos(self):
+    def save_police_pos(self): #nominal
         crime = self.crime
         station_names = []
         for name in crime['관서명']:
@@ -86,7 +96,7 @@ class CrimeService:
             station_names.append(f'서울{str(name[:-1])}경찰서')
         print(f' 서울시내 경찰서는 총 {len(station_names)}개 이다')
         [print(f'{str(i)}') for i in station_names]
-        gmaps = (lambda x: googlemaps.Client(key=x))("")
+        gmaps = (lambda x: googlemaps.Client(key=x))("")    # key key  key key key key key key key key key key key key key key key key key key key key key key key key key key key key key key key key
         print(gmaps.geocode("서울중부경찰서", language='ko'))
         print(' ### API에서 주소추출 시작 ### ')
         station_addrs = []
@@ -105,12 +115,19 @@ class CrimeService:
             gu_name = [gu for gu in _ if gu[-1] =='구'][0]
             gu_names.append(gu_name)
         crime['구별'] = gu_names
+        #구와 경찰서의 위치가 다른 경우 수작업
+        crime.loc[crime['관서명'] == '혜화서', ['구별']] == '종로구'
+        crime.loc[crime['관서명'] == '서부서', ['구별']] == '은평구'
+        crime.loc[crime['관서명'] == '강서서', ['구별']] == '양천구'
+        crime.loc[crime['관서명'] == '종암서', ['구별']] == '성북구'
+        crime.loc[crime['관서명'] == '방배서', ['구별']] == '서초구'
+        crime.loc[crime['관서명'] == '수서서', ['구별']] == '강남구'
         crime.to_csv('./save/police_pos.csv', index=False)
         crime.to_pickle('./save/police_pos.pkl')
         df = pd.read_pickle('./save/police_pos.pkl')
         print(df)
 
-    def save_cctv_pos(self):
+    def save_cctv_pop(self): # ratio -> nominal
         cctv = self.cctv
         pop = self.pop
         cctv.rename(columns={cctv.columns[0]:'구별'}, inplace=True)
@@ -149,14 +166,70 @@ class CrimeService:
                                     [-0.13607433  1.        ]]                        
          """
 
-    def interval(self):
-        pass
+    def save_police_norm(self):
+        police_pos = pd.read_pickle('./save/police_pos.pkl')
+        police = pd.pivot_table(police_pos, index="구별", aggfunc=np.sum)
+        police['살인검거율'] = (police['살인 검거'].astype(int) / police['살인 발생'].astype(int)) * 100
+        police['강도검거율'] = (police['강도 검거'].astype(int) / police['강도 발생'].astype(int)) * 100
+        police['강간검거율'] = (police['강간 검거'].astype(int) / police['강간 발생'].astype(int)) * 100
+        police['절도검거율'] = (police['절도 검거'].astype(int) / police['절도 발생'].astype(int)) * 100
+        police['폭력검거율'] = (police['폭력 검거'].astype(int) / police['폭력 발생'].astype(int)) * 100
+        police.drop(columns={'살인 검거', '강도 검거', '강간 검거', '절도 검거', '폭력 검거'})
+        for i in self.crime_rate_columns:
+            police.loc[police[i] > 100, 1] = 100
+        police.rename(columns={
+                                '살인 발생': '살인',
+                                '강도 발생': '강도',
+                                '강간 발생': '강간',
+                                '절도 발생': '절도',
+                                '폭력 발생': '폭력'
+                                }, inplace=True)
+        x = police[self.crime_rate_columns].values
+        min_max_scaler = preprocessing.MinMaxScaler()
+        """
+        스케일링은 선형변환을 적용하여
+        전체 자료의 분포를 평균 0, 분산 1이 되도록 만드는 과정
+        """
+        x_scaled = min_max_scaler.fit_transform(x.astype(float)) # float -> 연속형
+        """
+        정규화 normalization
+        많은 양의 데이터를 처리함에 있어 데이터의 범위(도메인)를 일치시키거나
+        분포(스케일)를 유사하게 만드는 작업
+        """
+        police_norm = pd.DataFrame(x_scaled, columns=self.crime_columns, index=police.index)
+        police_norm[self.crime_rate_columns] = police[self.crime_rate_columns]
+        police_norm['범죄'] = np.sum(police_norm[self.crime_rate_columns], axis=1)
+        police_norm['검거'] = np.sum(police_norm[self.crime_columns], axis=1)
+        police_norm.to_pickle('./save/police_norm.pkl')
+        print(pd.read_pickle('./save/police_norm.pkl'))
 
-    def ratio(self):
-        pass
+    def folium_example(self):
+        us_states = self.us_states
+        us_unemployment = self.us_unemployment
 
-    def nominal(self):
-        pass
+        url = "https://raw.githubusercontent.com/python-visualization/folium/master/examples/data"
+
+        state_geo = f"{url}/us-states.json"
+        state_unemployment = f"{url}/US_Unemployment_Oct2012.csv"
+        state_data = pd.read_csv(state_unemployment)
+
+        bins = list(us_unemployment['Unemployment'].quantile([0, 0.25, 0.5, 0.75, 1]))
+        m = folium.Map(location=[48, -102], zoom_start=5)
+        folium.Choropleth(
+            geo_data=state_geo, # us_states,
+            data=state_data, #us_unemployment,
+            name='choropleth',
+            columns=["State","Unemployment"],
+            key_on="feature.id",
+            fill_color="YlGn",
+            fill_opacity=0.7,
+            line_opacity=0.5,
+            legend_name='Unemployment Rate (%)',
+            bins=bins,
+            reset=True
+        ).add_to(m)
+        m.save("./save/unemployment.html")
+
 
     def ordinal(self):
         pass
@@ -169,4 +242,4 @@ class CrimeService:
 
 if __name__ == '__main__':
     c = CrimeService()
-    c.save_cctv_pos()
+    c.folium_example()
