@@ -16,8 +16,8 @@ CRIME_MENUS = ["close", # 0
                "save cctv position", # 3
                "save police normalization", # 4
                "folium example", # 5
-               "ordinal", # 6
-               "tatget", # 7
+               "save seoul folium", # 6
+               "create folium data", # 7
                "partition" # 8
                ]
 
@@ -26,8 +26,8 @@ crime_menu = {"1": lambda t: t.spec(),
               "3": lambda t: t.save_cctv_pop(),
               "4": lambda t: t.save_police_norm(),
               "5": lambda t: t.folium_example(),
-              "6": lambda t: t.ordinal(),
-              "7": lambda t: t.target(),
+              "6": lambda t: t.save_seoul_folium(),
+              "7": lambda t: t.create_folium_data(),
               "8": lambda t: t.partition()
               }
 
@@ -43,8 +43,9 @@ class CrimeService:
         self.crime_rate_columns = ['살인검거율', '강도검거율', '강간검거율', '절도검거율', '폭력검거율']
         self.crime_columns = ['살인', '강도', '강간', '절도', '폭력']
         self.arrest_columns = ['살인 검거', '강도 검거', '강간 검거', '절도 검거', '폭력 검거']
-        self.us_states = './data/us-states.json'
+        self.us_states = './save/us-states.json'
         self.us_unemployment = pd.read_csv('./data/us_unemployment.csv')
+        self.kr_states = './data/kr-state.json'
 
     '''
     def temp(self):
@@ -116,12 +117,12 @@ class CrimeService:
             gu_names.append(gu_name)
         crime['구별'] = gu_names
         #구와 경찰서의 위치가 다른 경우 수작업
-        crime.loc[crime['관서명'] == '혜화서', ['구별']] == '종로구'
-        crime.loc[crime['관서명'] == '서부서', ['구별']] == '은평구'
-        crime.loc[crime['관서명'] == '강서서', ['구별']] == '양천구'
-        crime.loc[crime['관서명'] == '종암서', ['구별']] == '성북구'
-        crime.loc[crime['관서명'] == '방배서', ['구별']] == '서초구'
-        crime.loc[crime['관서명'] == '수서서', ['구별']] == '강남구'
+        crime.loc[crime['관서명'] == '혜화서', ['구별']] = '종로구'
+        crime.loc[crime['관서명'] == '서부서', ['구별']] = '은평구'
+        crime.loc[crime['관서명'] == '강서서', ['구별']] = '강서구'
+        crime.loc[crime['관서명'] == '종암서', ['구별']] = '성북구'
+        crime.loc[crime['관서명'] == '방배서', ['구별']] = '서초구'
+        crime.loc[crime['관서명'] == '수서서', ['구별']] = '강남구'
         crime.to_csv('./save/police_pos.csv', index=False)
         crime.to_pickle('./save/police_pos.pkl')
         df = pd.read_pickle('./save/police_pos.pkl')
@@ -206,18 +207,16 @@ class CrimeService:
     def folium_example(self):
         us_states = self.us_states
         us_unemployment = self.us_unemployment
-
+        '''
         url = "https://raw.githubusercontent.com/python-visualization/folium/master/examples/data"
-
-        state_geo = f"{url}/us-states.json"
-        state_unemployment = f"{url}/US_Unemployment_Oct2012.csv"
-        state_data = pd.read_csv(state_unemployment)
-
+        '''
+        geo_data = us_states
+        data = pd.read_csv(us_unemployment)
         bins = list(us_unemployment['Unemployment'].quantile([0, 0.25, 0.5, 0.75, 1]))
-        m = folium.Map(location=[48, -102], zoom_start=5)
+        map = folium.Map(location=[48, -102], zoom_start=5)
         folium.Choropleth(
-            geo_data=state_geo, # us_states,
-            data=state_data, #us_unemployment,
+            geo_data=geo_data,
+            data=data,
             name='choropleth',
             columns=["State","Unemployment"],
             key_on="feature.id",
@@ -225,20 +224,42 @@ class CrimeService:
             fill_opacity=0.7,
             line_opacity=0.5,
             legend_name='Unemployment Rate (%)',
-            bins=bins,
-            reset=True
-        ).add_to(m)
-        m.save("./save/unemployment.html")
+            bins=bins
+        ).add_to(map)
+        map.save("./save/unemployment.html")
 
 
-    def ordinal(self):
-        pass
+    def save_seoul_folium(self):
+        geo_data = self.kr_states
+        data = self.create_folium_data()
+        map = folium.Map(location=[37.5502, 126.982], zoom_start=12)
+        folium.Choropleth(
+            geo_data=geo_data,
+            data=data,
+            name='choropleth',
+            columns=["State", "Crime Rate"],
+            key_on="feature.id",
+            fill_color="PuRd",
+            fill_opacity=0.7,
+            line_opacity=0.2,
+            legend_name='Crime Rate (%)',
+        ).add_to(map)
+        map.save("./save/crime.html")
 
-    def target(self):
-        pass
 
-    def partition(self):
-        pass
+    def create_folium_data(self):
+        police_pos = pd.read_pickle('./save/police_pos.pkl')
+        police_norm = pd.read_pickle('./save/police_norm.pkl')
+        temp = police_pos[self.arrest_columns] / police_pos[self.arrest_columns].max()
+        police_pos['검거'] = np.sum(temp, axis=1)
+        return tuple(zip(police_norm.index, police_norm['범죄']))
+
+def set_json_from_df():
+    df = pd.read_json('./data/us-states.json')
+    df.drop(df.index[[8,51]], inplace=True)
+    df.to_json('./save/us-states.json', orient='index')
+
+
 
 if __name__ == '__main__':
     c = CrimeService()
