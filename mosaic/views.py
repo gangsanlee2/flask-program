@@ -29,7 +29,7 @@ class MenuController(object):
         print(params[0])
         arr = ImageToNumberArray(params[1])
         # 람다식 내부에서 GRAYSCALE 변환 공식 사용함
-        #img = ExecuteLambda('IMAGE_READ', arr)
+        #image = ExecuteLambda('IMAGE_READ', arr)
         plt.imshow(MosaicLambdas('FROM_ARRAY',arr))
         plt.show()
 
@@ -37,13 +37,13 @@ class MenuController(object):
     def menu_3(*params):
         print(params[0])
         ### 디스크에서 읽는 경우 ###
-        # img = cv.imread('./data/roi.jpg', 0)
-        # img = cv.imread(img, 0)
+        # image = cv.imread('./data/roi.jpg', 0)
+        # image = cv.imread(image, 0)
         ### 메모리에서 읽는 경우 ###
         img = ImageToNumberArray(params[1])
         print(f'img type : {type(img)}')
-        # img = GaussianBlur(img, 1, 1) cv.Canny() 를 사용하지 않는 경우 필요
-        # img = Canny(img, 50, 150) cv.Canny() 를 사용하지 않는 경우 필요
+        # image = GaussianBlur(image, 1, 1) cv.Canny() 를 사용하지 않는 경우 필요
+        # image = Canny(image, 50, 150) cv.Canny() 를 사용하지 않는 경우 필요
         edges = cv.Canny(np.array(img), 100, 200)
         plt.subplot(121), plt.imshow(img, cmap='gray')
         plt.title('Original Image'), plt.xticks([]), plt.yticks([])

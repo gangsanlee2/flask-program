@@ -64,7 +64,7 @@ def Canny(src, lowThreshold,highThreshold):
                     q = img[i - 1, j - 1]
                     r = img[i + 1, j + 1]
 
-                if (img[i, j] >= q) and (img[i, j] >= r):  # 주변 픽셀(q, r)보다 크면 img 행렬의 값을 그대로 사용
+                if (img[i, j] >= q) and (img[i, j] >= r):  # 주변 픽셀(q, r)보다 크면 image 행렬의 값을 그대로 사용
                     Z[i, j] = img[i, j]
                 else:  # 그렇지 않을 경우 0을 사용
                     Z[i, j] = 0
@@ -118,7 +118,7 @@ def Hough(edges):
     return dst
 
 def Haar(*params):
-    #img = params[0]
+    #image = params[0]
     #xml = params[1]
     haar = cv.CascadeClassifier('./data/' + params[1])
     face = haar.detectMultiScale(params[0], minSize=(150, 150))
@@ -187,8 +187,8 @@ def image_read(fname) -> object:
     return (lambda x: cv.imread('./data/' + x))(fname)
 '''
 '''
-def gray_scale(img):
-    dst = img[:, :, 0] * 0.114 + img[:, :, 1] * 0.587 + img[:, :, 2] * 0.229  # GRAYSCALE 변환 공식
+def gray_scale(image):
+    dst = image[:, :, 0] * 0.114 + image[:, :, 1] * 0.587 + image[:, :, 2] * 0.229  # GRAYSCALE 변환 공식
     return dst
 '''
 
@@ -198,14 +198,14 @@ if __name__ == '__main__':
     '''
     URL = "https://docs.opencv.org/4.x/roi.jpg"
     arr = ImageToNumberArray(URL)
-    img = (lambda x: x[:, :, 0] * 0.114 + x[:, :, 1] * 0.587 + x[:, :, 2] * 0.229)(arr)
-    img = Canny(GaussianBlur(img, 1, 1), 50, 150)
-    plt.imshow((lambda x: Image.fromarray(x))(img))
+    image = (lambda x: x[:, :, 0] * 0.114 + x[:, :, 1] * 0.587 + x[:, :, 2] * 0.229)(arr)
+    image = Canny(GaussianBlur(image, 1, 1), 50, 150)
+    plt.imshow((lambda x: Image.fromarray(x))(image))
     plt.show()
     '''
     '''
-    img = Canny(img)
-    GaussianBlur.get(img, 1, 1)
+    image = Canny(image)
+    GaussianBlur.get(image, 1, 1)
     CannyModel()
     '''
 
